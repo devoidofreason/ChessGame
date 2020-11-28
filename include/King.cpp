@@ -183,10 +183,10 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 	return ret;
 }
 
-bool Rook::getWasMoved(){
+bool King::getWasMoved(){
 	return wasMoved;
 }
 
-void Rook::setWasMoved(){
+void King::setWasMoved(){
 	wasMoved = true;
 }

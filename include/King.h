@@ -7,6 +7,7 @@ class King : public Piece
 public:
 	King(int owner) : Piece(owner){ codeText = 'K'; wasMoved = false; }
 	std::vector <Square*> possibleSquares(Board*, Square*) override;
+	bool isInCheckAfterSelfDiscovery(Board*, Square*);
 	bool getWasMoved();
 	void setWasMoved();
 	bool getIsInCheck();

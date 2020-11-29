@@ -239,6 +239,132 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 	return ret;
 }
 
+bool King::isInCheckAfterSelfDiscovery(Board* board, Square* square){ // Thats enough of such troubles
+	int x = square->getX(), y = square->getY();
+	// Rooks rays - a bit copypasted from Rook.cpp
+	// Must check if enemy rook or queen at the end of a given ray
+	for(int i = x - 1; board->onBoard(i, y); i--)
+		if(board->board[i][y]->getPiece())
+			if(
+				board->board[i][y]->getPiece()->getOwner() != owner && 
+					(
+					board->board[i][y]->getPiece()->getCodeText() == 'Q' ||
+					board->board[i][y]->getPiece()->getCodeText() == 'R'
+					)
+				)
+				return true;
+			else
+				break;
+	for(int i = x + 1; board->onBoard(i, y); i++)
+		if(board->board[i][y]->getPiece())
+			if(
+				board->board[i][y]->getPiece()->getOwner() != owner && 
+					(
+					board->board[i][y]->getPiece()->getCodeText() == 'Q' ||
+					board->board[i][y]->getPiece()->getCodeText() == 'R'
+					)
+				)
+				return true;
+			else
+				break;
+	for(int i = y - 1; board->onBoard(x, i); i--)
+		if(board->board[x][i]->getPiece())
+			if(
+				board->board[i][y]->getPiece()->getOwner() != owner && 
+					(
+					board->board[i][y]->getPiece()->getCodeText() == 'Q' ||
+					board->board[i][y]->getPiece()->getCodeText() == 'R'
+					)
+				)
+				return true;
+			else
+				break;
+	for(int i = y + 1; board->onBoard(x, i); i++)
+		if(board->board[x][i]->getPiece())
+			if(
+				board->board[i][y]->getPiece()->getOwner() != owner && 
+					(
+					board->board[i][y]->getPiece()->getCodeText() == 'Q' ||
+					board->board[i][y]->getPiece()->getCodeText() == 'R'
+					)
+				)
+				return true;
+			else
+				break;
+	// Bishops rays - a bit copypasted from Bishop.cpp
+	// Must check if enemy bishop or queen at the end of a given ray
+	int i, j;
+	i = x - 1;
+	j = y - 1;
+	while(board->onBoard(i,j)){
+		if(board->board[i][j]->getPiece())
+			if(
+				board->board[i][y]->getPiece()->getOwner() != owner && 
+					(
+					board->board[i][y]->getPiece()->getCodeText() == 'Q' ||
+					board->board[i][y]->getPiece()->getCodeText() == 'B'
+					)
+				)
+				return true;
+			else
+				break;
+		i--;
+		j--;
+	}
+	i = x + 1;
+	j = y - 1;
+	while(board->onBoard(i,j)){
+		if(board->board[i][j]->getPiece())
+			if(
+				board->board[i][y]->getPiece()->getOwner() != owner && 
+					(
+					board->board[i][y]->getPiece()->getCodeText() == 'Q' ||
+					board->board[i][y]->getPiece()->getCodeText() == 'B'
+					)
+				)
+				return true;
+			else
+				break;
+		i++;
+		j--;
+	}
+	i = x - 1;
+	j = y + 1;
+	while(board->onBoard(i,j)){
+		if(board->board[i][j]->getPiece())
+			if(
+				board->board[i][y]->getPiece()->getOwner() != owner && 
+					(
+					board->board[i][y]->getPiece()->getCodeText() == 'Q' ||
+					board->board[i][y]->getPiece()->getCodeText() == 'B'
+					)
+				)
+				return true;
+			else
+				break;
+		i--;
+		j++;
+	}
+	i = x + 1;
+	j = y + 1;
+	while(board->onBoard(i,j)){
+		if(board->board[i][j]->getPiece())
+			if(
+				board->board[i][y]->getPiece()->getOwner() != owner && 
+					(
+					board->board[i][y]->getPiece()->getCodeText() == 'Q' ||
+					board->board[i][y]->getPiece()->getCodeText() == 'B'
+					)
+				)
+				return true;
+			else
+				break;
+		i++;
+		j++;
+	}
+	return false;
+}
+
 bool King::getWasMoved(){
 	return wasMoved;
 }

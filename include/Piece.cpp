@@ -32,3 +32,12 @@ bool Piece::canMove(Board* board, Square* square1, Square* square2){
 			return true;
 	return false;
 }
+
+void Piece::attackSquares(Board* board, std::vector <Square*> squares){
+	if(owner == 1)
+		for(int i=0; i<squares.size(); i++)
+			board->squaresAttackedByWhite[squares[i]->getX()][squares[i]->getY()] = true;
+	else
+		for(int i=0; i<squares.size(); i++)
+			board->squaresAttackedByBlack[squares[i]->getX()][squares[i]->getY()] = true;
+}

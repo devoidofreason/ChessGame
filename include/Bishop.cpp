@@ -80,5 +80,6 @@ std::vector <Square*> Bishop::possibleSquares(Board* board, Square* square){
 		i++;
 		j++;
 	}
+	attackSquares(board, ret);
 	return ret;
 }

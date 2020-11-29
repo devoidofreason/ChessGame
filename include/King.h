@@ -9,8 +9,11 @@ public:
 	std::vector <Square*> possibleSquares(Board*, Square*) override;
 	bool getWasMoved();
 	void setWasMoved();
+	bool getIsInCheck();
+	void setIsInCheck(bool);
 private:
 	bool wasMoved;
+	bool isInCheck;
 };
 
 #endif

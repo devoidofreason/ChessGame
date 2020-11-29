@@ -120,5 +120,6 @@ std::vector <Square*> Knight::possibleSquares(Board* board, Square* square){
 					board->squaresAttackedByBlack[x1][y1] = true;
 			}
 		}
+	attackSquares(board, ret);
 	return ret;
 }

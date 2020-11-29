@@ -142,5 +142,6 @@ std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
 		i++;
 		j++;
 	}
+	attackSquares(board, ret);
 	return ret;
 }

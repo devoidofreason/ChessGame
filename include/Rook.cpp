@@ -63,6 +63,7 @@ std::vector <Square*> Rook::possibleSquares(Board* board, Square* square){
 			break;
 		}
 	}
+	attackSquares(board, ret);
 	return ret;
 }
 

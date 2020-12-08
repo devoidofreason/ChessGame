@@ -13,8 +13,7 @@ public:
 	bool getIsInCheck();
 	void setIsInCheck(bool);
 private:
-	bool wasMoved;
-	bool isInCheck;
+	bool wasMoved, isInCheck;
 };
 
 #endif

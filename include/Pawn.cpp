@@ -76,5 +76,5 @@ bool Pawn::getCanBeCapturedEnPassant(){
 
 void Pawn::promotePawn(Square* square, Piece* newPiece){
 	square->setPiece(newPiece);
-	delete this; // kinda sad im doin this but i think its okay
+	delete this;
 }

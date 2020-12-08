@@ -5,7 +5,7 @@
 class Bishop : public Piece
 {
 public:
-	Bishop(int owner) : Piece(owner){ codeText = 'N'; }
+	Bishop(int owner) : Piece(owner){ codeText = 'B'; }
 	std::vector <Square*> possibleSquares(Board*, Square*) override;
 };
 

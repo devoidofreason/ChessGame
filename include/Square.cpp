@@ -1,9 +1,9 @@
 #include "Square.h"
 
-Square::Square(int x, int y, Piece* piece){
+Square::Square(int x, int y){
 	this->x = x;
 	this->y = y;
-	this->piece = piece;
+	piece = 0;
 }
 
 Piece* Square::getPiece(){

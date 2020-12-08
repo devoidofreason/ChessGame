@@ -6,7 +6,7 @@ class Board;
 class Square
 {
 public:
-	Square(int, int, Piece*);
+	Square(int, int);
 	Piece* getPiece();
 	void setPiece(Piece*);
 	int getX();

@@ -1,6 +1,6 @@
 #ifndef SQUARE_H
 #define SQUARE_H
-class Piece;	// forward declarations
+class Piece; // forward declarations
 class Board;
 
 class Square

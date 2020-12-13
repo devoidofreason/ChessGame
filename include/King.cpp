@@ -1,5 +1,6 @@
 #include "King.h"
 #include "Rook.h"
+#include <iostream>
 
 std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 	std::vector <Square*> ret;
@@ -8,180 +9,225 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 	// Standard moves
 	x1 = x - 1;
 	y1 = y - 1;
-	if(!board->board[x1][y1]->getPiece())
+	if(board->onBoard(x1, y1)){
 		if(owner == 1)
-			if(!board->squaresAttackedByBlack[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		else{
-			if(!board->squaresAttackedByWhite[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		}		
-	else{ 
-		if(canCapture(board->board[x1][y1]))
-			if(owner == 1)
+			board->squaresAttackedByWhite[x1][y1] = true;
+		else
+			board->squaresAttackedByBlack[x1][y1] = true;
+		if(!board->board[x1][y1]->getPiece())
+			if(owner == 1){
 				if(!board->squaresAttackedByBlack[x1][y1])
 					ret.push_back(board->board[x1][y1]);
+			}
 			else{
 				if(!board->squaresAttackedByWhite[x1][y1])
 					ret.push_back(board->board[x1][y1]);
 			}
+		else{
+			if(canCapture(board->board[x1][y1]))
+				if(owner == 1){
+					if(!board->squaresAttackedByBlack[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+				else{
+					if(!board->squaresAttackedByWhite[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+		}
 	}
 	x1 = x;
-	if(!board->board[x1][y1]->getPiece())
+	if(board->onBoard(x1, y1)){
 		if(owner == 1)
-			if(!board->squaresAttackedByBlack[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		else{
-			if(!board->squaresAttackedByWhite[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		}		
-	else{ 
-		if(canCapture(board->board[x1][y1]))
-			if(owner == 1)
+			board->squaresAttackedByWhite[x1][y1] = true;
+		else
+			board->squaresAttackedByBlack[x1][y1] = true;
+		if(!board->board[x1][y1]->getPiece())
+			if(owner == 1){
 				if(!board->squaresAttackedByBlack[x1][y1])
 					ret.push_back(board->board[x1][y1]);
+			}
 			else{
 				if(!board->squaresAttackedByWhite[x1][y1])
 					ret.push_back(board->board[x1][y1]);
 			}
+		else{
+			if(canCapture(board->board[x1][y1]))
+				if(owner == 1){
+					if(!board->squaresAttackedByBlack[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+				else{
+					if(!board->squaresAttackedByWhite[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+		}
 	}
 	x1 = x + 1;
-	if(!board->board[x1][y1]->getPiece())
+	if(board->onBoard(x1, y1)){
 		if(owner == 1)
-			if(!board->squaresAttackedByBlack[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		else{
-			if(!board->squaresAttackedByWhite[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		}		
-	else{ 
-		if(canCapture(board->board[x1][y1]))
-			if(owner == 1)
+			board->squaresAttackedByWhite[x1][y1] = true;
+		else
+			board->squaresAttackedByBlack[x1][y1] = true;
+		if(!board->board[x1][y1]->getPiece())
+			if(owner == 1){
 				if(!board->squaresAttackedByBlack[x1][y1])
 					ret.push_back(board->board[x1][y1]);
+			}
 			else{
 				if(!board->squaresAttackedByWhite[x1][y1])
 					ret.push_back(board->board[x1][y1]);
 			}
+		else{
+			if(canCapture(board->board[x1][y1]))
+				if(owner == 1){
+					if(!board->squaresAttackedByBlack[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+				else{
+					if(!board->squaresAttackedByWhite[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+		}
 	}
 	x1 = x - 1;
 	y1 = y;
-	if(!board->board[x1][y1]->getPiece())
+	if(board->onBoard(x1, y1)){
 		if(owner == 1)
-			if(!board->squaresAttackedByBlack[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		else{
-			if(!board->squaresAttackedByWhite[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		}		
-	else{ 
-		if(canCapture(board->board[x1][y1]))
-			if(owner == 1)
+			board->squaresAttackedByWhite[x1][y1] = true;
+		else
+			board->squaresAttackedByBlack[x1][y1] = true;
+		if(!board->board[x1][y1]->getPiece())
+			if(owner == 1){
 				if(!board->squaresAttackedByBlack[x1][y1])
 					ret.push_back(board->board[x1][y1]);
+			}
 			else{
 				if(!board->squaresAttackedByWhite[x1][y1])
 					ret.push_back(board->board[x1][y1]);
 			}
-	}
-	x1 = x;
-	if(!board->board[x1][y1]->getPiece())
-		if(owner == 1)
-			if(!board->squaresAttackedByBlack[x1][y1])
-				ret.push_back(board->board[x1][y1]);
 		else{
-			if(!board->squaresAttackedByWhite[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		}		
-	else{ 
-		if(canCapture(board->board[x1][y1]))
-			if(owner == 1)
-				if(!board->squaresAttackedByBlack[x1][y1])
-					ret.push_back(board->board[x1][y1]);
-			else{
-				if(!board->squaresAttackedByWhite[x1][y1])
-					ret.push_back(board->board[x1][y1]);
-			}
+			if(canCapture(board->board[x1][y1]))
+				if(owner == 1){
+					if(!board->squaresAttackedByBlack[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+				else{
+					if(!board->squaresAttackedByWhite[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+		}
 	}
 	x1 = x + 1;
-	if(!board->board[x1][y1]->getPiece())
+	if(board->onBoard(x1, y1)){
 		if(owner == 1)
-			if(!board->squaresAttackedByBlack[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		else{
-			if(!board->squaresAttackedByWhite[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		}		
-	else{ 
-		if(canCapture(board->board[x1][y1]))
-			if(owner == 1)
+			board->squaresAttackedByWhite[x1][y1] = true;
+		else
+			board->squaresAttackedByBlack[x1][y1] = true;
+		if(!board->board[x1][y1]->getPiece())
+			if(owner == 1){
 				if(!board->squaresAttackedByBlack[x1][y1])
 					ret.push_back(board->board[x1][y1]);
+			}
 			else{
 				if(!board->squaresAttackedByWhite[x1][y1])
 					ret.push_back(board->board[x1][y1]);
 			}
+		else{
+			if(canCapture(board->board[x1][y1]))
+				if(owner == 1){
+					if(!board->squaresAttackedByBlack[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+				else{
+					if(!board->squaresAttackedByWhite[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+		}
 	}
 	x1 = x - 1;
 	y1 = y + 1;
-	if(!board->board[x1][y1]->getPiece())
+	if(board->onBoard(x1, y1)){
 		if(owner == 1)
-			if(!board->squaresAttackedByBlack[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		else{
-			if(!board->squaresAttackedByWhite[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		}		
-	else{ 
-		if(canCapture(board->board[x1][y1]))
-			if(owner == 1)
+			board->squaresAttackedByWhite[x1][y1] = true;
+		else
+			board->squaresAttackedByBlack[x1][y1] = true;
+		if(!board->board[x1][y1]->getPiece())
+			if(owner == 1){
 				if(!board->squaresAttackedByBlack[x1][y1])
 					ret.push_back(board->board[x1][y1]);
+			}
 			else{
 				if(!board->squaresAttackedByWhite[x1][y1])
 					ret.push_back(board->board[x1][y1]);
 			}
+		else{
+			if(canCapture(board->board[x1][y1]))
+				if(owner == 1){
+					if(!board->squaresAttackedByBlack[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+				else{
+					if(!board->squaresAttackedByWhite[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+		}
 	}
 	x1 = x;
-	if(!board->board[x1][y1]->getPiece())
+	if(board->onBoard(x1, y1)){
 		if(owner == 1)
-			if(!board->squaresAttackedByBlack[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		else{
-			if(!board->squaresAttackedByWhite[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		}		
-	else{ 
-		if(canCapture(board->board[x1][y1]))
-			if(owner == 1)
+			board->squaresAttackedByWhite[x1][y1] = true;
+		else
+			board->squaresAttackedByBlack[x1][y1] = true;
+		if(!board->board[x1][y1]->getPiece())
+			if(owner == 1){
 				if(!board->squaresAttackedByBlack[x1][y1])
 					ret.push_back(board->board[x1][y1]);
+			}
 			else{
 				if(!board->squaresAttackedByWhite[x1][y1])
 					ret.push_back(board->board[x1][y1]);
 			}
+		else{
+			if(canCapture(board->board[x1][y1]))
+				if(owner == 1){
+					if(!board->squaresAttackedByBlack[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+				else{
+					if(!board->squaresAttackedByWhite[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+		}
 	}
 	x1 = x + 1;
-	if(!board->board[x1][y1]->getPiece())
+	if(board->onBoard(x1, y1)){
 		if(owner == 1)
-			if(!board->squaresAttackedByBlack[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		else{
-			if(!board->squaresAttackedByWhite[x1][y1])
-				ret.push_back(board->board[x1][y1]);
-		}		
-	else{ 
-		if(canCapture(board->board[x1][y1]))
-			if(owner == 1)
+			board->squaresAttackedByWhite[x1][y1] = true;
+		else
+			board->squaresAttackedByBlack[x1][y1] = true;
+		if(!board->board[x1][y1]->getPiece())
+			if(owner == 1){
 				if(!board->squaresAttackedByBlack[x1][y1])
 					ret.push_back(board->board[x1][y1]);
+			}
 			else{
 				if(!board->squaresAttackedByWhite[x1][y1])
 					ret.push_back(board->board[x1][y1]);
 			}
+		else{
+			if(canCapture(board->board[x1][y1]))
+				if(owner == 1){
+					if(!board->squaresAttackedByBlack[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+				else{
+					if(!board->squaresAttackedByWhite[x1][y1])
+						ret.push_back(board->board[x1][y1]);
+				}
+		}
 	}
 	// Castels
-	if(!wasMoved && !isInCheck)
+	if(!wasMoved && !isInCheck) // TO DO
 		if(owner == 1){
 			if(	// White queen side castels
 				board->board[7][0]->getPiece() &&
@@ -189,13 +235,14 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 				!board->board[7][2]->getPiece() &&
 				!board->board[7][3]->getPiece()
 				)
-				if(board->board[7][0]->getPiece()->getCodeText()=='R')
+				if(board->board[7][0]->getPiece()->getCodeText()=='R'){	
 					if(
 						!static_cast<Rook*>( board->board[7][0]->getPiece() )->getWasMoved() &&
 						!board->squaresAttackedByBlack[7][2] &&
 						!board->squaresAttackedByBlack[7][3]
 						)
 						ret.push_back(board->board[7][2]);
+				}
 			if(	// White king side castles
 				board->board[7][7]->getPiece() &&
 				!board->board[7][6]->getPiece() &&

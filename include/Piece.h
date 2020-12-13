@@ -7,6 +7,7 @@
 class Piece{
 public:
 	Piece(int); // 1 = white, -1 = black
+	Piece(Piece*);
 	int getOwner();
 	char getCodeText();
 	bool isAlive();

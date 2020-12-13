@@ -6,53 +6,42 @@ std::vector <Square*> Pawn::possibleSquares(Board* board, Square* square){
 	int x1, y1;
 	x1 = x - owner;
 	y1 = y - 1;
-	if(board->onBoard(x1, y1))
-		if(!board->board[x1][y1]->getPiece())
+	if(board->onBoard(x1, y1)){
+		if(owner==1)
+				board->squaresAttackedByWhite[x1][y1] = true;
+			else
+				board->squaresAttackedByBlack[x1][y1] = true;
+		if(canCapture(board->board[x1][y1]))
 			ret.push_back(board->board[x1][y1]);
-		else{
-			if(canCapture(board->board[x1][y1]))
-				ret.push_back(board->board[x1][y1]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[x1][y1] = true;
-				else
-					board->squaresAttackedByBlack[x1][y1] = true;
-			}
-		}
-	// En passant
-	if(board->board[x1 + owner][y1]->getPiece())
-		if(board->board[x1 + owner][y1]->getPiece()->getCodeText()=='P' && canCapture(board->board[x1 + owner][y1]))
-			if(static_cast<Pawn*>( board->board[x1 + owner][y1]->getPiece() )->getCanBeCapturedEnPassant()){
-				ret.push_back(board->board[x1][y1]);
-			}
-	y1 = y + 1;
-	if(board->onBoard(x1, y1))
-		if(!board->board[x1][y1]->getPiece())
-			ret.push_back(board->board[x1][y1]);
-		else{
-			if(canCapture(board->board[x1][y1]))
-				ret.push_back(board->board[x1][y1]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[x1][y1] = true;
-				else
-					board->squaresAttackedByBlack[x1][y1] = true;
-			}
-		}
-	// En passant
-	if(board->board[x1 + owner][y1]->getPiece())
-		if(board->board[x1 + owner][y1]->getPiece()->getCodeText()=='P' && canCapture(board->board[x1 + owner][y1]))
-			if(static_cast<Pawn*>( board->board[x1 + owner][y1]->getPiece() )->getCanBeCapturedEnPassant()){
-				ret.push_back(board->board[x1][y1]);
-			}
-	attackSquares(board, ret);
-	if(owner==1 && y == 6){
-		if(!board->board[x][4]->getPiece())
-			ret.push_back(board->board[x][4]);
 	}
-	if(owner==-1 && y == 1){
-		if(!board->board[x][1]->getPiece())
-			ret.push_back(board->board[x][1]);
+	// En passant
+	if(board->onBoard(x1 + owner, y1))
+		if(canCapture(board->board[x1 + owner][y1]))
+			if(board->board[x1 + owner][y1]->getPiece()->getCodeText()=='P')
+				if(static_cast<Pawn*>( board->board[x1 + owner][y1]->getPiece() )->getCanBeCapturedEnPassant())
+					ret.push_back(board->board[x1][y1]);
+	y1 = y + 1;
+	if(board->onBoard(x1, y1)){
+		if(owner==1)
+				board->squaresAttackedByWhite[x1][y1] = true;
+			else
+				board->squaresAttackedByBlack[x1][y1] = true;
+		if(canCapture(board->board[x1][y1]))
+			ret.push_back(board->board[x1][y1]);
+	}
+	// En passant
+	if(board->onBoard(x1 + owner, y1))
+		if(canCapture(board->board[x1 + owner][y1]))
+			if(board->board[x1 + owner][y1]->getPiece()->getCodeText()=='P' && canCapture(board->board[x1 + owner][y1]))
+				if(static_cast<Pawn*>( board->board[x1 + owner][y1]->getPiece() )->getCanBeCapturedEnPassant())
+					ret.push_back(board->board[x1][y1]);
+	if(owner==1 && x == 6){
+		if(!board->board[4][y]->getPiece())
+			ret.push_back(board->board[4][y]);
+	}
+	if(owner==-1 && x == 1){
+		if(!board->board[3][y]->getPiece())
+			ret.push_back(board->board[3][y]);
 	}
 	x1 = x - owner;
 	y1 = y;

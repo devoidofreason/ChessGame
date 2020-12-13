@@ -5,6 +5,12 @@ Piece::Piece(int owner){
 	alive = true;
 }
 
+Piece::Piece(Piece* parent){
+	owner = parent->owner;
+	alive = parent->alive;
+	codeText = parent->codeText;
+}
+
 int Piece::getOwner(){
 	return owner;
 }
@@ -22,6 +28,8 @@ void Piece::setCaptured(){
 }
 
 bool Piece::canCapture(Square* square){	// potentially unsafe, nullptr
+	if(!square->getPiece())
+		return false;
 	return owner != square->getPiece()->getOwner();
 }
 

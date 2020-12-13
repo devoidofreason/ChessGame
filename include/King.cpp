@@ -235,7 +235,7 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 				!board->board[7][2]->getPiece() &&
 				!board->board[7][3]->getPiece()
 				)
-				if(board->board[7][0]->getPiece()->getCodeText()=='R'){	
+				if(board->board[7][0]->getPiece()->getCodeText() == 'R'){	
 					if(
 						!static_cast<Rook*>( board->board[7][0]->getPiece() )->getWasMoved() &&
 						!board->squaresAttackedByBlack[7][2] &&
@@ -248,7 +248,7 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 				!board->board[7][6]->getPiece() &&
 				!board->board[7][5]->getPiece()
 				)
-				if(board->board[7][7]->getPiece()->getCodeText()=='R')
+				if(board->board[7][7]->getPiece()->getCodeText() == 'R')
 					if(
 						!static_cast<Rook*>( board->board[7][7]->getPiece() )->getWasMoved() &&
 						!board->squaresAttackedByBlack[7][6] &&
@@ -263,7 +263,7 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 				!board->board[0][2]->getPiece() &&
 				!board->board[0][3]->getPiece()
 				)
-				if(board->board[0][0]->getPiece()->getCodeText()=='R')
+				if(board->board[0][0]->getPiece()->getCodeText() == 'R')
 					if(
 						!static_cast<Rook*>( board->board[0][0]->getPiece() )->getWasMoved() &&
 						!board->squaresAttackedByWhite[0][2] &&
@@ -275,7 +275,7 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 				!board->board[0][6]->getPiece() &&
 				!board->board[0][5]->getPiece()
 				)
-				if(board->board[0][7]->getPiece()->getCodeText()=='R')
+				if(board->board[0][7]->getPiece()->getCodeText() == 'R')
 					if(
 						!static_cast<Rook*>( board->board[0][7]->getPiece() )->getWasMoved() &&
 						!board->squaresAttackedByWhite[0][6] &&

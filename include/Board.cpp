@@ -116,6 +116,7 @@ Board::Board(Board* parent){
 			squaresAttackedByBlack[i][j] = false;
 		}
 	}
+	whosTurn = -parent->whosTurn;
 
 	Piece* newPiece;
 	for(int i=0; i<8; i++)
@@ -144,7 +145,7 @@ bool Board::onBoard(int x, int y){
 }
 
 Square* Board::resolveSquareCode(std::string squareCode){
-	if(squareCode.length()<2)
+	if(squareCode.length() < 2)
 		return 0;
 	int x = (int)('8' - squareCode[1]);
 	int y = (int)(squareCode[0] - 'a');
@@ -206,11 +207,122 @@ void Board::printBoard(Square* square){
 }
 
 
-std::vector <Board*> Board::generateChildren(){ // TO DO
+std::vector <Board*> Board::generateChildren(){ // TO DO - Kings moves !!!
+	Board* newState;
 	std::vector <Board*> ret;
-	for(int i=0; i<pieces.size(); i++){
+	Piece* piece;
+	Piece* capturedPiece;
+	std::vector <Square*> possibleSquares;
+	Square* whiteKingPos;
+	Square* blackKingPos;
+	for(int i=0; i<8; i++)
+		for(int j=0; j<8; j++)
+			if(piece = board[i][j]->getPiece()){
+				char codeText = piece->getCodeText();
+				possibleSquares = piece->possibleSquares(this, board[i][j]);
+				if(codeText == 'P'){
+					if(whosTurn == piece->getOwner())
+						static_cast<Pawn*>(piece)->updateCanBeCapturedEnPassant();
+					for(int v=0; v<possibleSquares.size(); v++){
+						int x, y;
+						x = possibleSquares[v]->getX();
+						y = possibleSquares[v]->getY();
+						newState = new Board(this);
+						if(capturedPiece = possibleSquares[v]->getPiece()){
+							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
+							delete capturedPiece;
+						}
+						else if(y != j && !newState->board[x][y]->getPiece()){ // En passant - execute
+							capturedPiece = newState->board[x + piece->getOwner()][y]->getPiece();
+							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
+							delete capturedPiece;
+							newState->board[x + piece->getOwner()][y]->setPiece(0);
+						}
+						else if( x == i - (2 * piece->getOwner()) ) // En passant - allow
+							static_cast<Pawn*>(newState->board[x][y]->getPiece())->enableCaptureEnPassant();
+						else if(x == 0 || x == 7){ // Promotion
+							Piece* newPiece;
+							Board* newStateAfterPromotion;
+							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
+							newStateAfterPromotion = new Board(newState); // Queen
+							newPiece = new Queen(piece->getOwner());
+							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
+							newStateAfterPromotion->pieces.push_back(newPiece);
+							newStateAfterPromotion->board[i][j]->setPiece(0);
+							newStateAfterPromotion->calculateHashCode();
+							ret.push_back(newStateAfterPromotion);
+							newStateAfterPromotion = new Board(newState); // Rook
+							newPiece = new Rook(piece->getOwner());
+							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
+							newStateAfterPromotion->pieces.push_back(newPiece);
+							newStateAfterPromotion->board[i][j]->setPiece(0);
+							newStateAfterPromotion->calculateHashCode();
+							ret.push_back(newStateAfterPromotion);
+							newStateAfterPromotion = new Board(newState); // Bishop
+							newPiece = new Bishop(piece->getOwner());
+							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
+							newStateAfterPromotion->pieces.push_back(newPiece);
+							newStateAfterPromotion->board[i][j]->setPiece(0);
+							newStateAfterPromotion->calculateHashCode();
+							ret.push_back(newStateAfterPromotion);
+							newStateAfterPromotion = new Board(newState); // Knight
+							newPiece = new Knight(piece->getOwner());
+							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
+							newStateAfterPromotion->pieces.push_back(newPiece);
+							newStateAfterPromotion->board[i][j]->setPiece(0);
+							newStateAfterPromotion->calculateHashCode();
+							ret.push_back(newStateAfterPromotion);
+							delete newState;
+							continue;
+						}
+						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
+						newState->board[i][j]->setPiece(0);
+						newState->calculateHashCode();
+						ret.push_back(newState);
+					}
 
-	}
+				}
+				else if(codeText == 'R'){
+					for(int v=0; v<possibleSquares.size(); v++){
+						int x, y;
+						x = possibleSquares[v]->getX();
+						y = possibleSquares[v]->getY();
+						newState = new Board(this);
+						if(capturedPiece = possibleSquares[v]->getPiece()){
+							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
+							delete capturedPiece;
+						}
+						static_cast<Rook*>(newState->board[i][j]->getPiece())->setWasMoved(); // Rook - moved?
+						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
+						newState->board[i][j]->setPiece(0);
+						newState->calculateHashCode();
+						ret.push_back(newState);
+					}
+				}
+				else if(codeText == 'K'){
+					if(piece->getOwner() == 1)
+						whiteKingPos = newState->board[i][j];
+					else
+						blackKingPos = newState->board[i][j];
+				}
+				else{
+					for(int v=0; v<possibleSquares.size(); v++){
+						int x, y;
+						x = possibleSquares[v]->getX();
+						y = possibleSquares[v]->getY();
+						newState = new Board(this);
+						if(capturedPiece = possibleSquares[v]->getPiece()){
+							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
+							delete capturedPiece;
+						}
+						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
+						newState->board[i][j]->setPiece(0);
+						newState->calculateHashCode();
+						ret.push_back(newState);
+					}
+				}
+				possibleSquares.clear();
+			}
 	return ret;
 }
 
@@ -242,7 +354,6 @@ void Board::calculateHashCode(){
 		hashCode = ((hashCode << 5) + hashCode) + c; /* hash * 33 + c */
 
 	delete gameStateByteSha256;
-	std::cout << hashCode << "\n";
 }
 
 Board::~Board(){

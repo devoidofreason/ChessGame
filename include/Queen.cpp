@@ -10,12 +10,6 @@ std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
 		else{
 			if(canCapture(board->board[i][y]))
 				ret.push_back(board->board[i][y]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[i][y] = true;
-				else
-					board->squaresAttackedByBlack[i][y] = true;
-			}
 			break;
 		}
 	}
@@ -25,12 +19,6 @@ std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
 		else{ 
 			if(canCapture(board->board[i][y]))
 				ret.push_back(board->board[i][y]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[i][y] = true;
-				else
-					board->squaresAttackedByBlack[i][y] = true;
-			}
 			break;
 		}
 	}
@@ -40,12 +28,6 @@ std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
 		else{ 
 			if(canCapture(board->board[x][i]))
 				ret.push_back(board->board[x][i]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[x][i] = true;
-				else
-					board->squaresAttackedByBlack[x][i] = true;
-			}
 			break;
 		}
 	}
@@ -55,12 +37,6 @@ std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
 		else{ 
 			if(canCapture(board->board[x][i]))
 				ret.push_back(board->board[x][i]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[x][i] = true;
-				else
-					board->squaresAttackedByBlack[x][i] = true;
-			}
 			break;
 		}
 	}
@@ -74,12 +50,6 @@ std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
 		else{ 
 			if(canCapture(board->board[i][j]))
 				ret.push_back(board->board[i][j]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[i][j] = true;
-				else
-					board->squaresAttackedByBlack[i][j] = true;
-			}
 			break;
 		}
 		i--;
@@ -93,12 +63,6 @@ std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
 		else{ 
 			if(canCapture(board->board[i][j]))
 				ret.push_back(board->board[i][j]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[i][j] = true;
-				else
-					board->squaresAttackedByBlack[i][j] = true;
-			}
 			break;
 		}
 		i++;
@@ -112,12 +76,6 @@ std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
 		else{ 
 			if(canCapture(board->board[i][j]))
 				ret.push_back(board->board[i][j]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[i][j] = true;
-				else
-					board->squaresAttackedByBlack[i][j] = true;
-			}
 			break;
 		}
 		i--;
@@ -131,17 +89,10 @@ std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
 		else{ 
 			if(canCapture(board->board[i][j]))
 				ret.push_back(board->board[i][j]);
-			else{
-				if(owner==1)
-					board->squaresAttackedByWhite[i][j] = true;
-				else
-					board->squaresAttackedByBlack[i][j] = true;
-			}
 			break;
 		}
 		i++;
 		j++;
 	}
-	attackSquares(board, ret);
 	return ret;
 }

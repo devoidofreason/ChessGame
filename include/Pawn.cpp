@@ -7,10 +7,6 @@ std::vector <Square*> Pawn::possibleSquares(Board* board, Square* square){
 	x1 = x - owner;
 	y1 = y - 1;
 	if(board->onBoard(x1, y1)){
-		if(owner==1)
-				board->squaresAttackedByWhite[x1][y1] = true;
-			else
-				board->squaresAttackedByBlack[x1][y1] = true;
 		if(canCapture(board->board[x1][y1]))
 			ret.push_back(board->board[x1][y1]);
 	}
@@ -22,10 +18,6 @@ std::vector <Square*> Pawn::possibleSquares(Board* board, Square* square){
 					ret.push_back(board->board[x1][y1]);
 	y1 = y + 1;
 	if(board->onBoard(x1, y1)){
-		if(owner==1)
-				board->squaresAttackedByWhite[x1][y1] = true;
-			else
-				board->squaresAttackedByBlack[x1][y1] = true;
 		if(canCapture(board->board[x1][y1]))
 			ret.push_back(board->board[x1][y1]);
 	}

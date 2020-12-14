@@ -10,10 +10,10 @@ public:
 	Board();
 	Board(Board*);
 	Square*** board;
+	Square* whiteKingPos;
+	Square* blackKingPos;
 	std::vector <Piece*> pieces;
 	int whosTurn;
-	bool** squaresAttackedByWhite;
-	bool** squaresAttackedByBlack;
 	bool onBoard(int, int);
 	Square* resolveSquareCode(std::string);
 	void printBoard();

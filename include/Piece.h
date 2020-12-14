@@ -14,7 +14,6 @@ public:
 	void setCaptured();
 	bool canCapture(Square*);
 	bool canMove(Board*, Square*, Square*);
-	void attackSquares(Board*, std::vector <Square*>);
 	virtual std::vector <Square*> possibleSquares(Board*, Square*) = 0;
 protected:
 	int owner;

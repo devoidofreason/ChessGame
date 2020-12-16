@@ -147,11 +147,12 @@ Square* Board::resolveSquareCode(std::string squareCode){
 
 void Board::printBoard(){
 	system("cls");
-	std::cout << "  ";
+	std::cout << "     ";
 	for(int i=0; i<8; i++)
 		std::cout << " " << char('a' + i) << " ";
+	std::cout << "\n";
 	for(int i=0; i<8; i++){
-		std::cout << "\n\n" << char('8' - i) << " ";
+		std::cout << "\n\n" << char('8' - i) << "    ";
 		for(int j=0; j<8; j++){
 			if(board[i][j]->getPiece())
 				std::cout << ( (board[i][j]->getPiece()->getOwner() == -1 ) ? "-" : " " )
@@ -161,7 +162,7 @@ void Board::printBoard(){
 			std::cout << " ";
 		}
 	}
-	std::cout << "\n" << stringHashCode << "\n" << hashCode << "\n";
+	std::cout << "\n\n" << stringHashCode << "\n" << hashCode << "\n\n";
 }
 
 void Board::printBoard(Square* square){
@@ -445,7 +446,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						}
 						else if( x == i - (2 * piece->getOwner()) ) // En passant - allow
 							static_cast<Pawn*>(newState->board[i][j]->getPiece())->enableCaptureEnPassant();
-						else if(x == 0 || x == 7){ // Promotion
+						if(x == 0 || x == 7){ // Promotion
 							std::string tmp;
 							Piece* newPiece;
 							Board* newStateAfterPromotion;

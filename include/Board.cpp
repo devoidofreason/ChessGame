@@ -21,8 +21,42 @@ Board::Board(){
 			board[i][j] = new Square(i, j);
 	}
 
+	/*
+	int owner = -1;
+	Piece* newPiece;
+
+	newPiece = new King(owner);
+	pieces.push_back(newPiece);
+	board[0][4]->setPiece(newPiece);
+
+	newPiece = new Rook(owner);
+	pieces.push_back(newPiece);
+	board[0][0]->setPiece(newPiece);
+
+	newPiece = new Rook(owner);
+	pieces.push_back(newPiece);
+	board[0][7]->setPiece(newPiece);
+
+	owner = 1;
+
+	newPiece = new King(owner);
+	pieces.push_back(newPiece);
+	board[7][4]->setPiece(newPiece);
+
+	newPiece = new Rook(owner);
+	pieces.push_back(newPiece);
+	board[7][7]->setPiece(newPiece);
+
+	newPiece = new Rook(owner);
+	pieces.push_back(newPiece);
+	board[7][0]->setPiece(newPiece);
+
+	blackKingPos = board[0][4];
+	whiteKingPos = board[7][4];
+	*/
+
 	whosTurn = 1;
- 	
+
 	Piece* newPiece;
 	int owner = -1; // Firstsly: black pieces
 	newPiece = new Rook(owner);
@@ -224,7 +258,9 @@ std::vector<Board*> Board::generateChildren(){
 						}
 						else if( x == i - (2 * piece->getOwner()) ) // En passant - allow
 							static_cast<Pawn*>(newState->board[i][j]->getPiece())->enableCaptureEnPassant();
-						else if(x == 0 || x == 7){ // Promotion
+						if(x == 0 || x == 7){ // Promotion
+							newState->whosTurn = -newState->whosTurn;
+							std::string tmp;
 							Piece* newPiece;
 							Board* newStateAfterPromotion;
 							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
@@ -290,7 +326,6 @@ std::vector<Board*> Board::generateChildren(){
 							}
 						}
 						newState->calculateHashCode();
-						ret.push_back(newState);
 					}
 				} 
 				else if(codeText == 'R'){ // Rooks
@@ -319,7 +354,6 @@ std::vector<Board*> Board::generateChildren(){
 							}
 						}
 						newState->calculateHashCode();
-						ret.push_back(newState);
 					}
 				}
 				else if(codeText == 'K'){ // Kings
@@ -332,34 +366,50 @@ std::vector<Board*> Board::generateChildren(){
 							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
 							delete capturedPiece;
 						}
-						if(y == i + 2){ // Queen side castles
+						if(y == j - 2){ // Queen side castles
 							newState->board[x][3]->setPiece(newState->board[x][0]->getPiece());
 							newState->board[x][0]->setPiece(0);
 							newState->board[x][2]->setPiece(newState->board[x][4]->getPiece());
 							newState->board[x][4]->setPiece(0);
+							if(whosTurn == 1){
+								newState->whiteKingPos = newState->board[x][2];
+								static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
+							}
+							else{
+								newState->blackKingPos = newState->board[x][2];
+								static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
+							}
 							newState->calculateHashCode();
 							ret.push_back(newState);
 							continue;
 						}
-						else if(y == i - 2){ // King side castles
+						else if(y == j + 2){ // King side castles
 							newState->board[x][5]->setPiece(newState->board[x][7]->getPiece());
 							newState->board[x][7]->setPiece(0);
 							newState->board[x][6]->setPiece(newState->board[x][4]->getPiece());
 							newState->board[x][4]->setPiece(0);
+							if(whosTurn == 1){
+								newState->whiteKingPos = newState->board[x][6];
+								static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
+							}
+							else{
+								newState->blackKingPos = newState->board[x][6];
+								static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
+							}
 							newState->calculateHashCode();
 							ret.push_back(newState);
 							continue;
 						}
-						if(whosTurn == 1){
-							static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
-							newState->whiteKingPos = newState->board[x][y];
-						}
-						else{
-							static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
-							newState->blackKingPos = newState->board[x][y];
-						}
 						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
 						newState->board[i][j]->setPiece(0);
+						if(whosTurn == 1){
+							newState->whiteKingPos = newState->board[x][y];
+							static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
+						}
+						else{
+							newState->blackKingPos = newState->board[x][y];
+							static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
+						}
 						newState->calculateHashCode();
 						ret.push_back(newState);
 					}
@@ -447,6 +497,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						else if( x == i - (2 * piece->getOwner()) ) // En passant - allow
 							static_cast<Pawn*>(newState->board[i][j]->getPiece())->enableCaptureEnPassant();
 						if(x == 0 || x == 7){ // Promotion
+							newState->whosTurn = -newState->whosTurn;
 							std::string tmp;
 							Piece* newPiece;
 							Board* newStateAfterPromotion;
@@ -574,38 +625,54 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							delete capturedPiece;
 							label2 += "x ";
 						}
-						if(y == i + 2){ // Queen side castles
+						if(y == j - 2){ // Queen side castles
 							newState->board[x][3]->setPiece(newState->board[x][0]->getPiece());
 							newState->board[x][0]->setPiece(0);
 							newState->board[x][2]->setPiece(newState->board[x][4]->getPiece());
 							newState->board[x][4]->setPiece(0);
+							if(whosTurn == 1){
+								newState->whiteKingPos = newState->board[x][2];
+								static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
+							}
+							else{
+								newState->blackKingPos = newState->board[x][2];
+								static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
+							}
 							newState->calculateHashCode();
 							label2 += "O-O-O ";
 							labels->push_back(label2);
 							ret.push_back(newState);
 							continue;
 						}
-						else if(y == i - 2){ // King side castles
+						else if(y == j + 2){ // King side castles
 							newState->board[x][5]->setPiece(newState->board[x][7]->getPiece());
 							newState->board[x][7]->setPiece(0);
 							newState->board[x][6]->setPiece(newState->board[x][4]->getPiece());
 							newState->board[x][4]->setPiece(0);
+							if(whosTurn == 1){
+								newState->whiteKingPos = newState->board[x][6];
+								static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
+							}
+							else{
+								newState->blackKingPos = newState->board[x][6];
+								static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
+							}
 							newState->calculateHashCode();
 							label2 += "O-O ";
 							labels->push_back(label2);
 							ret.push_back(newState);
 							continue;
 						}
-						if(whosTurn == 1){
-							static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
-							newState->whiteKingPos = newState->board[x][y];
-						}
-						else{
-							static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
-							newState->blackKingPos = newState->board[x][y];
-						}
 						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
 						newState->board[i][j]->setPiece(0);
+						if(whosTurn == 1){
+							newState->whiteKingPos = newState->board[x][y];
+							static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
+						}
+						else{
+							newState->blackKingPos = newState->board[x][y];
+							static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
+						}
 						newState->calculateHashCode();
 						labels->push_back(label2);
 						ret.push_back(newState);

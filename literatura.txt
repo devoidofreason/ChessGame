@@ -1,1 +1,12 @@
 Algorytmy + str danych = programy
+megamax - algorytm
+transposition table
+
+introduction.tex
+definitions.tex
+chapters.tex
+abstract.tex
+
+bibliograohy.bib
+
+chapterN.tex

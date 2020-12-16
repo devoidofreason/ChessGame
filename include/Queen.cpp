@@ -1,6 +1,6 @@
 #include "Queen.h"
 
-std::vector <Square*> Queen::possibleSquares(Board* board, Square* square){
+std::vector<Square*> Queen::possibleSquares(Board* board, Square* square){
 	std::vector <Square*> ret;
 	int x = square->getX(), y = square->getY();
 	// copypasted from Rook.cpp cuz why not

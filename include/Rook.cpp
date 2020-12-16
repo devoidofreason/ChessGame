@@ -1,6 +1,6 @@
 #include "Rook.h"
 
-std::vector <Square*> Rook::possibleSquares(Board* board, Square* square){
+std::vector<Square*> Rook::possibleSquares(Board* board, Square* square){
 	std::vector <Square*> ret;
 	int x = square->getX(), y = square->getY();
 	for(int i = x - 1; board->onBoard(i, y); i--){

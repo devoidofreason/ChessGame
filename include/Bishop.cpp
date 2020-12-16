@@ -1,6 +1,6 @@
 #include "Bishop.h"
 
-std::vector <Square*> Bishop::possibleSquares(Board* board, Square* square){
+std::vector<Square*> Bishop::possibleSquares(Board* board, Square* square){
 	std::vector<Square*> ret;
 	int x = square->getX(), y = square->getY();
 	int i, j;

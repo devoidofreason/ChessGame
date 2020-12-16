@@ -1,6 +1,6 @@
 #include "Pawn.h"
 
-std::vector <Square*> Pawn::possibleSquares(Board* board, Square* square){
+std::vector<Square*> Pawn::possibleSquares(Board* board, Square* square){
 	std::vector <Square*> ret;
 	int x = square->getX(), y = square->getY();
 	int x1, y1;

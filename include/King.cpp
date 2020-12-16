@@ -2,7 +2,7 @@
 #include "Rook.h"
 #include <iostream>
 
-std::vector <Square*> King::possibleSquares(Board* board, Square* square){
+std::vector<Square*> King::possibleSquares(Board* board, Square* square){
 	std::vector <Square*> ret;
 	int x = square->getX(), y = square->getY();
 	// Standard moves
@@ -13,7 +13,7 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 					if(!isInCheck(board, board->board[i][j]))
 						ret.push_back(board->board[i][j]);
 	// Castels
-	if(!wasMoved && !inCheck)
+	if(!wasMoved && !isInCheck(board, square))
 		if(owner == 1){
 			if(	// White queen side castels
 				board->board[7][0]->getPiece() &&
@@ -60,8 +60,8 @@ std::vector <Square*> King::possibleSquares(Board* board, Square* square){
 				}
 			if(	// Black king side castles
 				board->board[0][7]->getPiece() &&
-				!isInCheck(board, board->board[0][6]) &&
-				!isInCheck(board, board->board[0][5])
+				!board->board[0][6]->getPiece() &&
+				!board->board[0][5]->getPiece()
 				)
 				if(board->board[0][7]->getPiece()->getCodeText() == 'R'){
 					if(
@@ -211,7 +211,7 @@ bool King::isInCheck(Board* board, Square* square){ // Thats enough of such trou
 				return true;
 	j = y + 1;
 	if(board->onBoard(i, j))
-		if(board->board[i][j]->getPiece())
+		if(piece = board->board[i][j]->getPiece())
 			if(
 				piece->getOwner() != owner && 
 				piece->getCodeText() == 'P'
@@ -307,12 +307,4 @@ bool King::getWasMoved(){
 
 void King::setWasMoved(){
 	wasMoved = true;
-}
-
-bool King::getIsInCheck(){
-	return inCheck;
-}
-
-void King::setIsInCheck(bool inCheck){
-	this->inCheck = inCheck;
 }

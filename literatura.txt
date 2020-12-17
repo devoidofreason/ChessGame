@@ -1,12 +1,15 @@
 Algorytmy + str danych = programy
-megamax - algorytm
+https://hxim.github.io/Stockfish-Evaluation-Guide/
+
+negamax - algorytm
 transposition table
+researchgate
+
+pliki latex do edytowania:
 
 introduction.tex
 definitions.tex
 chapters.tex
 abstract.tex
-
 bibliograohy.bib
-
 chapterN.tex

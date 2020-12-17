@@ -24,6 +24,8 @@ public:
 	unsigned long long int hashCode;
 	std::string stringHashCode;
 	~Board();
+
+	std::string testString;
 };
 
 #endif

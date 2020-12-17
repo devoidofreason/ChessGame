@@ -224,226 +224,9 @@ void Board::printBoard(Square* square){
 }
 
 std::vector<Board*> Board::generateChildren(){
-	Board* newState;
-	std::vector<Board*> ret;
-	Piece* piece;
-	Piece* capturedPiece;
-	std::vector<Square*> possibleSquares;
-	Square* whiteKingPos;
-	Square* blackKingPos;
-	for(int i=0; i<8; i++)
-		for(int j=0; j<8; j++)
-			if(piece = board[i][j]->getPiece()){
-				char codeText = piece->getCodeText();
-				if(whosTurn != piece->getOwner())
-					continue;
-				possibleSquares = piece->possibleSquares(this, board[i][j]);
-				if(codeText == 'P'){ // Pawns
-					for(int v=0; v<possibleSquares.size(); v++){
-						int x, y;
-						x = possibleSquares[v]->getX();
-						y = possibleSquares[v]->getY();
-						newState = new Board(this);
-						if(whosTurn == piece->getOwner())
-							static_cast<Pawn*>(newState->board[i][j]->getPiece())->updateCanBeCapturedEnPassant();
-						if(capturedPiece = newState->board[x][y]->getPiece()){
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
-							delete capturedPiece;
-						}
-						else if(y != j && !newState->board[x][y]->getPiece()){ // En passant - execute
-							capturedPiece = newState->board[x + piece->getOwner()][y]->getPiece();
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
-							delete capturedPiece;
-							newState->board[x + piece->getOwner()][y]->setPiece(0);
-						}
-						else if( x == i - (2 * piece->getOwner()) ) // En passant - allow
-							static_cast<Pawn*>(newState->board[i][j]->getPiece())->enableCaptureEnPassant();
-						if(x == 0 || x == 7){ // Promotion
-							newState->whosTurn = -newState->whosTurn;
-							std::string tmp;
-							Piece* newPiece;
-							Board* newStateAfterPromotion;
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
-							newStateAfterPromotion = new Board(newState); // Queen
-							newPiece = new Queen(piece->getOwner());
-							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
-							newStateAfterPromotion->pieces.push_back(newPiece);
-							newStateAfterPromotion->board[i][j]->setPiece(0);
-							if(whosTurn == 1){
-								if(static_cast<King*>(newStateAfterPromotion->whiteKingPos->getPiece())->isInCheck(newStateAfterPromotion, newStateAfterPromotion->whiteKingPos)){
-									delete newState;
-									delete newStateAfterPromotion;
-									delete newPiece;
-									continue;
-								}
-							}
-							else{
-								if(static_cast<King*>(newStateAfterPromotion->blackKingPos->getPiece())->isInCheck(newStateAfterPromotion, newStateAfterPromotion->blackKingPos)){
-									delete newState;
-									delete newStateAfterPromotion;
-									delete newPiece;
-									continue;
-								}
-							}
-							newStateAfterPromotion->calculateHashCode();
-							ret.push_back(newStateAfterPromotion);
-							newStateAfterPromotion = new Board(newState); // Rook
-							newPiece = new Rook(piece->getOwner());
-							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
-							newStateAfterPromotion->pieces.push_back(newPiece);
-							newStateAfterPromotion->board[i][j]->setPiece(0);
-							newStateAfterPromotion->calculateHashCode();
-							ret.push_back(newStateAfterPromotion);
-							newStateAfterPromotion = new Board(newState); // Bishop
-							newPiece = new Bishop(piece->getOwner());
-							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
-							newStateAfterPromotion->pieces.push_back(newPiece);
-							newStateAfterPromotion->board[i][j]->setPiece(0);
-							newStateAfterPromotion->calculateHashCode();
-							ret.push_back(newStateAfterPromotion);
-							newStateAfterPromotion = new Board(newState); // Knight
-							newPiece = new Knight(piece->getOwner());
-							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
-							newStateAfterPromotion->pieces.push_back(newPiece);
-							newStateAfterPromotion->board[i][j]->setPiece(0);
-							newStateAfterPromotion->calculateHashCode();
-							ret.push_back(newStateAfterPromotion);
-							delete newState;
-							continue;
-						}
-						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
-						newState->board[i][j]->setPiece(0);
-						if(whosTurn == 1){
-							if(static_cast<King*>(newState->whiteKingPos->getPiece())->isInCheck(newState, newState->whiteKingPos)){
-									delete newState;
-									continue;
-								}
-							}
-						else{
-							if(static_cast<King*>(newState->blackKingPos->getPiece())->isInCheck(newState, newState->blackKingPos)){
-								delete newState;
-								continue;
-							}
-						}
-						newState->calculateHashCode();
-					}
-				} 
-				else if(codeText == 'R'){ // Rooks
-					for(int v=0; v<possibleSquares.size(); v++){
-						int x, y;
-						x = possibleSquares[v]->getX();
-						y = possibleSquares[v]->getY();
-						newState = new Board(this);
-						if(capturedPiece = newState->board[x][y]->getPiece()){
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
-							delete capturedPiece;
-						}
-						static_cast<Rook*>(newState->board[i][j]->getPiece())->setWasMoved(); // Rook - moved?
-						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
-						newState->board[i][j]->setPiece(0);
-						if(whosTurn == 1){
-							if(static_cast<King*>(newState->whiteKingPos->getPiece())->isInCheck(newState, newState->whiteKingPos)){
-								delete newState;
-								continue;
-							}
-						}
-						else{
-							if(static_cast<King*>(newState->blackKingPos->getPiece())->isInCheck(newState, newState->blackKingPos)){
-								delete newState;
-								continue;
-							}
-						}
-						newState->calculateHashCode();
-					}
-				}
-				else if(codeText == 'K'){ // Kings
-					for(int v=0; v<possibleSquares.size(); v++){
-						int x, y;
-						x = possibleSquares[v]->getX();
-						y = possibleSquares[v]->getY();
-						newState = new Board(this);
-						if(capturedPiece = newState->board[x][y]->getPiece()){
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
-							delete capturedPiece;
-						}
-						if(y == j - 2){ // Queen side castles
-							newState->board[x][3]->setPiece(newState->board[x][0]->getPiece());
-							newState->board[x][0]->setPiece(0);
-							newState->board[x][2]->setPiece(newState->board[x][4]->getPiece());
-							newState->board[x][4]->setPiece(0);
-							if(whosTurn == 1){
-								newState->whiteKingPos = newState->board[x][2];
-								static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
-							}
-							else{
-								newState->blackKingPos = newState->board[x][2];
-								static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
-							}
-							newState->calculateHashCode();
-							ret.push_back(newState);
-							continue;
-						}
-						else if(y == j + 2){ // King side castles
-							newState->board[x][5]->setPiece(newState->board[x][7]->getPiece());
-							newState->board[x][7]->setPiece(0);
-							newState->board[x][6]->setPiece(newState->board[x][4]->getPiece());
-							newState->board[x][4]->setPiece(0);
-							if(whosTurn == 1){
-								newState->whiteKingPos = newState->board[x][6];
-								static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
-							}
-							else{
-								newState->blackKingPos = newState->board[x][6];
-								static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
-							}
-							newState->calculateHashCode();
-							ret.push_back(newState);
-							continue;
-						}
-						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
-						newState->board[i][j]->setPiece(0);
-						if(whosTurn == 1){
-							newState->whiteKingPos = newState->board[x][y];
-							static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
-						}
-						else{
-							newState->blackKingPos = newState->board[x][y];
-							static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
-						}
-						newState->calculateHashCode();
-						ret.push_back(newState);
-					}
-				}
-				else{ // Other pieces
-					for(int v=0; v<possibleSquares.size(); v++){
-						int x, y;
-						x = possibleSquares[v]->getX();
-						y = possibleSquares[v]->getY();
-						newState = new Board(this);
-						if(capturedPiece = newState->board[x][y]->getPiece()){
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
-							delete capturedPiece;
-						}
-						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
-						newState->board[i][j]->setPiece(0);
-						if(whosTurn == 1){
-							if(static_cast<King*>(newState->whiteKingPos->getPiece())->isInCheck(newState, newState->whiteKingPos)){
-								delete newState;
-								continue;
-							}
-						}
-						else{
-							if(static_cast<King*>(newState->blackKingPos->getPiece())->isInCheck(newState, newState->blackKingPos)){
-								delete newState;
-								continue;
-							}
-						}
-						newState->calculateHashCode();
-						ret.push_back(newState);
-					}
-				}
-				possibleSquares.clear();
-			}
+	std::vector<std::string> v;
+	std::vector<Board*> ret = generateChildren(&v);
+	v.clear();
 	return ret;
 }
 
@@ -456,9 +239,17 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 	Square* whiteKingPos;
 	Square* blackKingPos;
 	std::string label1, label2;
+
+	bool test = false;
+
 	for(int i=0; i<8; i++)
-		for(int j=0; j<8; j++)
+		for(int j=0; j<8; j++){
+				if(test){
+					std::cout << "After king... " << i << " " << j << "\n";
+					getche();
+				}
 			if(piece = board[i][j]->getPiece()){
+
 				char codeText = piece->getCodeText();
 				if(whosTurn != piece->getOwner())
 					continue;
@@ -469,8 +260,12 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 				label1 += char('a' + j);
 				label1 += char('8' - i);
 				label1 += " -> ";
+
+				std::cout << "generateChildren() - analyzing " << codeText << " on " << i << " " << j << "\n";
+
 				possibleSquares = piece->possibleSquares(this, board[i][j]);
 				if(codeText == 'P'){ // Pawns
+					static_cast<Pawn*>(piece)->disallowCaptureEnPassant();
 					for(int v=0; v<possibleSquares.size(); v++){
 						int x, y;
 						x = possibleSquares[v]->getX();
@@ -480,8 +275,6 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						label2 += char('8' - x);
 						label2 += " ";
 						newState = new Board(this);
-						if(whosTurn == piece->getOwner())
-							static_cast<Pawn*>(newState->board[i][j]->getPiece())->updateCanBeCapturedEnPassant();
 						if(capturedPiece = newState->board[x][y]->getPiece()){
 							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
 							delete capturedPiece;
@@ -589,6 +382,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						if(capturedPiece = newState->board[x][y]->getPiece()){
 							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
 							delete capturedPiece;
+							label2 += "x ";
 						}
 						static_cast<Rook*>(newState->board[i][j]->getPiece())->setWasMoved(); // Rook - moved?
 						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
@@ -663,6 +457,12 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							ret.push_back(newState);
 							continue;
 						}
+
+						if(i == 1 && j == 4 && whosTurn == -1){
+							std::cout << "King about to be analized... " << x << " " << y << "\n";
+							test = true;
+						}
+
 						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
 						newState->board[i][j]->setPiece(0);
 						if(whosTurn == 1){
@@ -714,6 +514,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 				}
 				possibleSquares.clear();
 			}
+		}
 	return ret;
 }
 
@@ -736,6 +537,7 @@ void Board::calculateHashCode(){
 				gameStateString += codeText;
 			}
 		}
+	testString = gameStateString;
 
 	const char* gameStateByteSha256 = sha256(gameStateString).c_str(); // Big thanks : http://www.zedwood.com/article/cpp-sha256-function
 
@@ -746,7 +548,7 @@ void Board::calculateHashCode(){
 	while (c = *gameStateByteSha256++)
 		hashCode = ((hashCode << 5) + hashCode) + c; /* hash * 33 + c */
 
-	delete [] gameStateByteSha256;
+	//delete gameStateByteSha256;
 }
 
 Board::~Board(){

@@ -12,9 +12,9 @@ std::vector<Square*> Pawn::possibleSquares(Board* board, Square* square){
 	}
 	// En passant
 	if(board->onBoard(x1 + owner, y1))
-		if(canCapture(board->board[x1 + owner][y1]))
-			if(board->board[x1 + owner][y1]->getPiece()->getCodeText()=='P')
-				if(static_cast<Pawn*>( board->board[x1 + owner][y1]->getPiece() )->getCanBeCapturedEnPassant())
+		if(canCapture(board->board[x][y1]))
+			if(board->board[x][y1]->getPiece()->getCodeText()=='P')
+				if(static_cast<Pawn*>( board->board[x][y1]->getPiece())->getCanBeCapturedEnPassant())
 					ret.push_back(board->board[x1][y1]);
 	y1 = y + 1;
 	if(board->onBoard(x1, y1)){
@@ -23,9 +23,9 @@ std::vector<Square*> Pawn::possibleSquares(Board* board, Square* square){
 	}
 	// En passant
 	if(board->onBoard(x1 + owner, y1))
-		if(canCapture(board->board[x1 + owner][y1]))
-			if(board->board[x1 + owner][y1]->getPiece()->getCodeText()=='P' && canCapture(board->board[x1 + owner][y1]))
-				if(static_cast<Pawn*>( board->board[x1 + owner][y1]->getPiece() )->getCanBeCapturedEnPassant())
+		if(canCapture(board->board[x][y1]))
+			if(board->board[x][y1]->getPiece()->getCodeText()=='P')
+				if(static_cast<Pawn*>( board->board[x][y1]->getPiece())->getCanBeCapturedEnPassant())
 					ret.push_back(board->board[x1][y1]);
 	if(owner==1 && x == 6){
 		if(!board->board[4][y]->getPiece())
@@ -47,7 +47,7 @@ void Pawn::enableCaptureEnPassant(){
 	canBeCapturedEnPassant = true;
 }
 
-void Pawn::updateCanBeCapturedEnPassant(){
+void Pawn::disallowCaptureEnPassant(){
 	canBeCapturedEnPassant = false;
 }
 

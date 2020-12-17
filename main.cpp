@@ -6,7 +6,7 @@ using namespace std;
 
 int main(){
 	Game *G = new Game();
-	G->performGame();
+	G->testGame("log.txt");
 	delete G;
 	system("pause");
 	return 0;

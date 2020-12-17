@@ -9,7 +9,7 @@ public:
 	Pawn(Piece* parent) : Piece(parent){ canBeCapturedEnPassant = static_cast<Pawn*>(parent)->getCanBeCapturedEnPassant(); }
 	std::vector<Square*> possibleSquares(Board*, Square*) override;
 	void enableCaptureEnPassant();
-	void updateCanBeCapturedEnPassant();
+	void disallowCaptureEnPassant();
 	bool getCanBeCapturedEnPassant();
 	void promotePawn(Square*, Piece*);
 private:

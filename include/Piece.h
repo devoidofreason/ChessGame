@@ -10,14 +10,11 @@ public:
 	Piece(Piece*);
 	int getOwner();
 	char getCodeText();
-	bool isAlive();
-	void setCaptured();
 	bool canCapture(Square*);
 	bool canMove(Board*, Square*, Square*);
 	virtual std::vector<Square*> possibleSquares(Board*, Square*) = 0;
 protected:
 	int owner;
-	bool alive;
 	char codeText;
 };
 

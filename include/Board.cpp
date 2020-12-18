@@ -239,17 +239,9 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 	Square* whiteKingPos;
 	Square* blackKingPos;
 	std::string label1, label2;
-
-	bool test = false;
-
 	for(int i=0; i<8; i++)
 		for(int j=0; j<8; j++){
-				if(test){
-					std::cout << "After king... " << i << " " << j << "\n";
-					getche();
-				}
 			if(piece = board[i][j]->getPiece()){
-
 				char codeText = piece->getCodeText();
 				if(whosTurn != piece->getOwner())
 					continue;
@@ -260,9 +252,6 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 				label1 += char('a' + j);
 				label1 += char('8' - i);
 				label1 += " -> ";
-
-				std::cout << "generateChildren() - analyzing " << codeText << " on " << i << " " << j << "\n";
-
 				possibleSquares = piece->possibleSquares(this, board[i][j]);
 				if(codeText == 'P'){ // Pawns
 					static_cast<Pawn*>(piece)->disallowCaptureEnPassant();
@@ -457,22 +446,13 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							ret.push_back(newState);
 							continue;
 						}
-
-						if(i == 1 && j == 4 && whosTurn == -1){
-							std::cout << "King about to be analized... " << x << " " << y << "\n";
-							test = true;
-						}
-
+						static_cast<King*>(newState->board[i][j]->getPiece())->setWasMoved();
 						newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
 						newState->board[i][j]->setPiece(0);
-						if(whosTurn == 1){
+						if(whosTurn == 1)
 							newState->whiteKingPos = newState->board[x][y];
-							static_cast<King*>(newState->whiteKingPos->getPiece())->setWasMoved();
-						}
-						else{
+						else
 							newState->blackKingPos = newState->board[x][y];
-							static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
-						}
 						newState->calculateHashCode();
 						labels->push_back(label2);
 						ret.push_back(newState);

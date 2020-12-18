@@ -1,13 +1,10 @@
 #include "Piece.h"
 
 Piece::Piece(int owner){
-	this->owner = owner;
-	alive = true;
-}
+	this->owner = owner;}
 
 Piece::Piece(Piece* parent){
 	owner = parent->owner;
-	alive = parent->alive;
 	codeText = parent->codeText;
 }
 
@@ -17,14 +14,6 @@ int Piece::getOwner(){
 
 char Piece::getCodeText(){
 	return codeText;
-}
-
-bool Piece::isAlive(){
-	return alive;
-}
-
-void Piece::setCaptured(){
-	alive = false;
 }
 
 bool Piece::canCapture(Square* square){	// potentially unsafe, nullptr

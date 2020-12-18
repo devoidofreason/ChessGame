@@ -75,9 +75,9 @@ void Game::performGame(){
 						ocurred[i] ++;
 			for(int i=0; i<gameStory.size(); i++){
 				if( !(ocurred[i] < 3) ){
-
+					logFile.open("log.txt", std::ios::app);
 					logFile << "Draw by 3 fold repetition.\n";
-
+					logFile.close();
 					return;
 				}
 			}
@@ -85,19 +85,21 @@ void Game::performGame(){
 		}
 		children = board->generateChildren();
 	}
-	if(static_cast<King*>(board->whiteKingPos->getPiece())->isInCheck(board, board->whiteKingPos))
-
+	if(static_cast<King*>(board->whiteKingPos->getPiece())->isInCheck(board, board->whiteKingPos)){
+		logFile.open("log.txt", std::ios::app);
 		logFile << "Black won by checkmate.\n";
-
-
-	else if(static_cast<King*>(board->blackKingPos->getPiece())->isInCheck(board, board->blackKingPos))
-
+		logFile.close();
+	}
+	else if(static_cast<King*>(board->blackKingPos->getPiece())->isInCheck(board, board->blackKingPos)){
+		logFile.open("log.txt", std::ios::app);
 		logFile << "White won by checkmate.\n";
-
-	else
-
+		logFile.close();
+	}
+	else{
+		logFile.open("log.txt", std::ios::app);
 		logFile << "Draw by stealmate!\n";
-
+		logFile.close();
+	}
 	logFile.close();
 }
 
@@ -162,14 +164,6 @@ bool Game::performHumanMove(){
 			std::cout << " ";
 		std::cout << labels.size() - 1 << " : " << labels[labels.size() - 1] << "\n";
 	}
-	std::cout << "\n";
-	for(int i=0; i<8; i++){
-		for(int j=0; j<8; j++)
-			std::cout << ( (board->board[i][j]->getPiece()) ? "1" : "0") << " ";
-		std::cout << "\n";
-	}
-	std::cout << "whiteKingPos : " << board->whiteKingPos->getX() << ", " << board->whiteKingPos->getY() << "\n";
-	std::cout << "blackKingPos : " << board->blackKingPos->getX() << ", " << board->blackKingPos->getY() << "\n";
 	std::cin >> c;
 	delete board;
 	board = children[c];

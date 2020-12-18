@@ -13,7 +13,7 @@ std::vector<Square*> King::possibleSquares(Board* board, Square* square){
 					if(!isInCheck(board, board->board[i][j]))
 						ret.push_back(board->board[i][j]);
 	// Castels
-	if(!wasMoved && !isInCheck(board, square))
+	if( (!wasMoved) && (!isInCheck(board, square)) ){
 		if(owner == 1){
 			if(	// White queen side castels
 				board->board[7][0]->getPiece() &&
@@ -43,7 +43,7 @@ std::vector<Square*> King::possibleSquares(Board* board, Square* square){
 						ret.push_back(board->board[7][6]);
 				}
 		}
-		else
+		else{
 			if(	// Black queen side castels
 				board->board[0][0]->getPiece() &&
 				!board->board[0][1]->getPiece() &&
@@ -71,6 +71,8 @@ std::vector<Square*> King::possibleSquares(Board* board, Square* square){
 						)
 						ret.push_back(board->board[0][6]);
 				}
+		}
+	}
 	return ret;
 }
 

@@ -11,7 +11,6 @@ public:
 	void enableCaptureEnPassant();
 	void disallowCaptureEnPassant();
 	bool getCanBeCapturedEnPassant();
-	void promotePawn(Square*, Piece*);
 private:
 	bool canBeCapturedEnPassant;
 };

@@ -11,10 +11,10 @@ std::vector<Square*> Pawn::possibleSquares(Board* board, Square* square){
 			ret.push_back(board->board[x1][y1]);
 	}
 	// En passant
-	if(board->onBoard(x1 + owner, y1))
+	if(board->onBoard(x1, y1))
 		if(canCapture(board->board[x][y1]))
 			if(board->board[x][y1]->getPiece()->getCodeText()=='P')
-				if(static_cast<Pawn*>( board->board[x][y1]->getPiece())->getCanBeCapturedEnPassant())
+				if(static_cast<Pawn*>(board->board[x][y1]->getPiece())->getCanBeCapturedEnPassant())
 					ret.push_back(board->board[x1][y1]);
 	y1 = y + 1;
 	if(board->onBoard(x1, y1)){
@@ -22,24 +22,27 @@ std::vector<Square*> Pawn::possibleSquares(Board* board, Square* square){
 			ret.push_back(board->board[x1][y1]);
 	}
 	// En passant
-	if(board->onBoard(x1 + owner, y1))
+	if(board->onBoard(x1, y1))
 		if(canCapture(board->board[x][y1]))
 			if(board->board[x][y1]->getPiece()->getCodeText()=='P')
-				if(static_cast<Pawn*>( board->board[x][y1]->getPiece())->getCanBeCapturedEnPassant())
+				if(static_cast<Pawn*>(board->board[x][y1]->getPiece())->getCanBeCapturedEnPassant())
 					ret.push_back(board->board[x1][y1]);
-	if(owner==1 && x == 6){
-		if(!board->board[4][y]->getPiece())
-			ret.push_back(board->board[4][y]);
-	}
-	if(owner==-1 && x == 1){
-		if(!board->board[3][y]->getPiece())
-			ret.push_back(board->board[3][y]);
-	}
-	x1 = x - owner;
 	y1 = y;
 	if(board->onBoard(x1, y1))
 		if(!board->board[x1][y1]->getPiece())
 			ret.push_back(board->board[x1][y1]);
+	if(owner==1 && x == 6){
+		if(!board->board[4][y]->getPiece() &&
+			!board->board[5][y]->getPiece()
+			)
+			ret.push_back(board->board[4][y]);
+	}
+	if(owner==-1 && x == 1){
+		if(!board->board[3][y]->getPiece() &&
+			!board->board[2][y]->getPiece()
+			)
+			ret.push_back(board->board[3][y]);
+	}
 	return ret;
 }
 
@@ -53,9 +56,4 @@ void Pawn::disallowCaptureEnPassant(){
 
 bool Pawn::getCanBeCapturedEnPassant(){
 	return canBeCapturedEnPassant;
-}
-
-void Pawn::promotePawn(Square* square, Piece* newPiece){
-	square->setPiece(newPiece);
-	delete this;
 }

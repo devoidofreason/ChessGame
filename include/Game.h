@@ -9,14 +9,14 @@ class Game
 public:
 	Game();
 	void performGame();
-	void testGame(std::string);
-	bool performHumanMove(int);
-	bool performHumanMove();
+	void performHumanMove();
+	void performAiMove();
 	~Game();
 private:
-	std::string codeText;
 	Board* board;
+	Negamax* negamax;
 	bool humanPlayerWhite, humanPlayerBlack;
+	std::string codeText;
 	std::vector<unsigned long long int> gameStory;
 	std::string gameStoryPGN;
 };

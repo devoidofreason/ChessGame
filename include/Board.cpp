@@ -11,8 +11,6 @@
 #include "sha256.h" // Big thanks to Mr. Olivier Gay
 // http://www.zedwood.com/article/cpp-sha256-function
 
-#include <conio.h>
-
 Board::Board(){
 	board = new Square** [8];
 	for(int i=0; i<8; i++){
@@ -195,8 +193,9 @@ void Board::printBoard(){
 				std::cout  << " " << char(176);
 			std::cout << " ";
 		}
+		std::cout << "\n";
 	}
-	std::cout << "\n\n" << stringHashCode << "\n" << hashCode << "\n\n";
+	std::cout << "\n\n" << stringHashCode << "\n" << hashCode << "\n";
 }
 
 void Board::printBoard(Square* square){
@@ -236,9 +235,10 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 	Piece* piece;
 	Piece* capturedPiece;
 	std::vector<Square*> possibleSquares;
-	Square* whiteKingPos;
-	Square* blackKingPos;
 	std::string label1, label2;
+	for(int i=0; i<pieces.size(); i++)
+		if(whosTurn == pieces[i]->getOwner() && pieces[i]->getCodeText() == 'P')
+			static_cast<Pawn*>(pieces[i])->disallowCaptureEnPassant();
 	for(int i=0; i<8; i++)
 		for(int j=0; j<8; j++){
 			if(piece = board[i][j]->getPiece()){
@@ -254,7 +254,6 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 				label1 += " -> ";
 				possibleSquares = piece->possibleSquares(this, board[i][j]);
 				if(codeText == 'P'){ // Pawns
-					static_cast<Pawn*>(piece)->disallowCaptureEnPassant();
 					for(int v=0; v<possibleSquares.size(); v++){
 						int x, y;
 						x = possibleSquares[v]->getX();
@@ -265,30 +264,50 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						label2 += " ";
 						newState = new Board(this);
 						if(capturedPiece = newState->board[x][y]->getPiece()){
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
+							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
 							delete capturedPiece;
 							label2 += "x ";
 						}
 						else if(y != j && !newState->board[x][y]->getPiece()){ // En passant - execute
-							capturedPiece = newState->board[x + piece->getOwner()][y]->getPiece();
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
+							capturedPiece = newState->board[i][y]->getPiece();
+							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
 							delete capturedPiece;
-							newState->board[x + piece->getOwner()][y]->setPiece(0);
+							newState->board[i][y]->setPiece(0);
+							newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
+							newState->board[i][j]->setPiece(0);
+							if(whosTurn == 1){
+								if(static_cast<King*>(newState->whiteKingPos->getPiece())->isInCheck(newState, newState->whiteKingPos)){
+									delete newState;
+									continue;
+								}
+							}
+							else{
+								if(static_cast<King*>(newState->blackKingPos->getPiece())->isInCheck(newState, newState->blackKingPos)){
+									delete newState;
+									continue;
+								}
+							}
+							newState->calculateHashCode();
 							label2 += "xEn ";
+							labels->push_back(label2);
+							ret.push_back(newState);
+							continue;
 						}
-						else if( x == i - (2 * piece->getOwner()) ) // En passant - allow
+						if( x == i - (2 * piece->getOwner()) ) // En passant - allow
 							static_cast<Pawn*>(newState->board[i][j]->getPiece())->enableCaptureEnPassant();
 						if(x == 0 || x == 7){ // Promotion
 							newState->whosTurn = -newState->whosTurn;
 							std::string tmp;
 							Piece* newPiece;
 							Board* newStateAfterPromotion;
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
-							newStateAfterPromotion = new Board(newState); // Queen
+							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[i][j]->getPiece()), newState->pieces.end());
+							delete newState->board[i][j]->getPiece();
+							newState->board[i][j]->setPiece(0);
+							// Queen
+							newStateAfterPromotion = new Board(newState); 
 							newPiece = new Queen(piece->getOwner());
-							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
 							newStateAfterPromotion->pieces.push_back(newPiece);
-							newStateAfterPromotion->board[i][j]->setPiece(0);
+							newState->board[x][y]->setPiece(newPiece);
 							if(whosTurn == 1){
 								if(static_cast<King*>(newStateAfterPromotion->whiteKingPos->getPiece())->isInCheck(newStateAfterPromotion, newStateAfterPromotion->whiteKingPos)){
 									delete newState;
@@ -309,29 +328,29 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							tmp = label2 + " -> Q";
 							labels->push_back(tmp);
 							ret.push_back(newStateAfterPromotion);
-							newStateAfterPromotion = new Board(newState); // Rook
+							// Rook
+							newStateAfterPromotion = new Board(newState);
 							newPiece = new Rook(piece->getOwner());
-							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
 							newStateAfterPromotion->pieces.push_back(newPiece);
-							newStateAfterPromotion->board[i][j]->setPiece(0);
+							newState->board[x][y]->setPiece(newPiece);
 							newStateAfterPromotion->calculateHashCode();
 							tmp = label2 + " -> R";
 							labels->push_back(tmp);
 							ret.push_back(newStateAfterPromotion);
-							newStateAfterPromotion = new Board(newState); // Bishop
+							// Bishop
+							newStateAfterPromotion = new Board(newState);
 							newPiece = new Bishop(piece->getOwner());
-							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
 							newStateAfterPromotion->pieces.push_back(newPiece);
-							newStateAfterPromotion->board[i][j]->setPiece(0);
+							newState->board[x][y]->setPiece(newPiece);
 							newStateAfterPromotion->calculateHashCode();
 							tmp = label2 + " -> B";
 							labels->push_back(tmp);
 							ret.push_back(newStateAfterPromotion);
-							newStateAfterPromotion = new Board(newState); // Knight
+							// Knight
+							newStateAfterPromotion = new Board(newState); 
 							newPiece = new Knight(piece->getOwner());
-							static_cast<Pawn*>(newStateAfterPromotion->board[i][j]->getPiece())->promotePawn(newStateAfterPromotion->board[x][y], newPiece);
 							newStateAfterPromotion->pieces.push_back(newPiece);
-							newStateAfterPromotion->board[i][j]->setPiece(0);
+							newState->board[x][y]->setPiece(newPiece);
 							newStateAfterPromotion->calculateHashCode();
 							tmp = label2 + " -> N";
 							labels->push_back(tmp);
@@ -369,7 +388,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						label2 += " ";
 						newState = new Board(this);
 						if(capturedPiece = newState->board[x][y]->getPiece()){
-							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), newState->board[x][y]->getPiece()), newState->pieces.end());
+							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
 							delete capturedPiece;
 							label2 += "x ";
 						}
@@ -453,6 +472,18 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							newState->whiteKingPos = newState->board[x][y];
 						else
 							newState->blackKingPos = newState->board[x][y];
+						if(whosTurn == 1){
+							if(static_cast<King*>(newState->whiteKingPos->getPiece())->isInCheck(newState, newState->whiteKingPos)){
+									delete newState;
+									continue;
+								}
+							}
+						else{
+							if(static_cast<King*>(newState->blackKingPos->getPiece())->isInCheck(newState, newState->blackKingPos)){
+								delete newState;
+								continue;
+							}
+						}
 						newState->calculateHashCode();
 						labels->push_back(label2);
 						ret.push_back(newState);
@@ -517,7 +548,6 @@ void Board::calculateHashCode(){
 				gameStateString += codeText;
 			}
 		}
-	testString = gameStateString;
 
 	const char* gameStateByteSha256 = sha256(gameStateString).c_str(); // Big thanks : http://www.zedwood.com/article/cpp-sha256-function
 

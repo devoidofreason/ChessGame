@@ -2,10 +2,13 @@
 #define HEURISTIC_H
 #include "Board.h"
 
+#define	INF	1000000000.0f
+
 class Heuristic
 {
 public:
-	virtual float evaluatePosition() = 0;
+	float gameStatusValue(Board*);
+	virtual float evaluatePosition(Board*) = 0;
 };
 
 #endif

@@ -4,6 +4,10 @@
 #include <vector>
 #include <string>
 
+#define WHITE_WINS	1
+#define BLACK_WINS	2
+#define DRAW		3
+
 class Board
 {
 public:
@@ -12,6 +16,8 @@ public:
 	Square*** board;
 	Square* whiteKingPos;
 	Square* blackKingPos;
+	Square* square1;
+	Square* square2;
 	std::vector<Piece*> pieces;
 	int whosTurn;
 	bool onBoard(int, int);
@@ -21,8 +27,9 @@ public:
 	std::vector<Board*> generateChildren();
 	std::vector<Board*> generateChildren(std::vector<std::string>* labels);
 	void calculateHashCode();
+	int getStatus();
 	unsigned long long int hashCode;
-	std::string stringHashCode;
+	float evaluation;
 	~Board();
 };
 

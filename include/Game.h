@@ -7,7 +7,7 @@
 class Game
 {
 public:
-	Game();
+	Game(bool, bool);
 	void performGame();
 	void performHumanMove();
 	void performAiMove();

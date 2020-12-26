@@ -3,7 +3,7 @@
 using namespace std;
 
 int main(){
-	Game *G = new Game();
+	Game *G = new Game(true, false);
 	G->performGame();
 	delete G;
 	system("pause");

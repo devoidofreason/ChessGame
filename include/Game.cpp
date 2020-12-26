@@ -1,22 +1,20 @@
 #include "Game.h"
-#include "King.h"
 #include <iostream>
 #include <fstream>
 
-Game::Game(){
+#include "Piece.h"
+#include "MaterialHeuristic.h"
+
+Game::Game(bool humanPlayerWhite, bool humanPlayerBlack){
 	board = new Board();
-	negamax = new Negamax();
-	humanPlayerWhite = true;
-	humanPlayerBlack = true;
+	negamax = new Negamax(3);
+	this->humanPlayerWhite = humanPlayerWhite;
+	this->humanPlayerBlack = humanPlayerBlack;
 }
 
 void Game::performGame(){
-	std::vector<Board*> children = board->generateChildren();
-	while(children.size()){
+	while(board->getStatus() == 0){
 		gameStory.push_back(board->hashCode);
-		for(int i=0; i<children.size(); i++)
-			delete children[i];
-		children.clear();
 		if(board->whosTurn == 1){
 			if(humanPlayerWhite)
 				performHumanMove();
@@ -44,22 +42,18 @@ void Game::performGame(){
 				}
 			}
 			delete [] ocurred;
-			if(board->pieces.size() == 2){
-				std::cout << "Draw by insufficient material.\n";
-				return;
-			}
 		}
-		children = board->generateChildren();
 	}
-	if(static_cast<King*>(board->whiteKingPos->getPiece())->isInCheck(board, board->whiteKingPos)){
-		std::cout << "Black wins by checkmate.\n";
-	}
-	else if(static_cast<King*>(board->blackKingPos->getPiece())->isInCheck(board, board->blackKingPos)){
+	int status = board->getStatus();
+	board->printBoard();
+	Heuristic* m = negamax->heuristic;
+	std::cout << "Evalutaion : " << board->whosTurn * m->evaluatePosition(board) << "\n";
+	if(status == DRAW)
+		std::cout << "Draw.\n";
+	else if(status == WHITE_WINS)
 		std::cout << "White wins by checkmate.\n";
-	}
-	else{
-		std::cout << "Draw by stealmate!\n";
-	}
+	else if(status == BLACK_WINS)
+		std::cout << "Black wins by checkmate.\n";
 }
 
 void Game::performHumanMove(){
@@ -68,6 +62,8 @@ void Game::performHumanMove(){
 	std::string column1, column2;
 	int c;
 	board->printBoard();
+	Heuristic* m = negamax->heuristic;
+	std::cout << "Evalutaion : " << board->whosTurn * m->evaluatePosition(board) << "\n";
 	for(int i=0; i<labels.size()/2; i++){
 		column1 = ( (i < 10) ? " " : "" );
 		column1 += std::to_string(i);
@@ -98,7 +94,12 @@ void Game::performHumanMove(){
 }
 
 void Game::performAiMove(){
-	
+	board->printBoard();
+	Heuristic* m = negamax->heuristic;
+	std::cout << "Evalutaion : " << board->whosTurn * m->evaluatePosition(board) << "\n";
+	Board* tmp = board;
+	board = negamax->getBestMove(board);
+	delete tmp;
 }
 
 Game::~Game(){

@@ -13,3 +13,9 @@ chapters.tex
 abstract.tex
 bibliograohy.bib
 chapterN.tex
+
+bibliografia:
+rodział1:
+
+rodział2:
+	- Mirosława Litmanowicz „SZACHY” M.A.W. Warszawa 1987

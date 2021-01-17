@@ -1,19 +1,20 @@
 #ifndef NEGAMAX_H
 #define NEGAMAX_H
-#include "Heuristic.h"
+
+#include "HeuristicComposer.h"
 #include "Board.h"
 
 class Negamax
 {
 public:
-	Negamax(int);
+	Negamax(int, HeuristicComposer*);
+	// MaterialHeuristic, ActivityHeuristic
 	Board* getBestMove(Board*);
 	float negamaxStep(Board*, int, float, float);
-	Heuristic* heuristic;
+	HeuristicComposer* h;
 	~Negamax();
 private:
 	int depth;
-	bool compareStates(Board*, Board*);
 };
 
 #endif

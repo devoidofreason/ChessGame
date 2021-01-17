@@ -1,0 +1,13 @@
+%----------------------------------------------------------------------------------------
+%	CHAPTER 2
+%----------------------------------------------------------------------------------------
+
+\chapter{O spotkaniu szachów i informatyki}
+
+\section{Krótko o historii szachów}
+
+Gra w szachy wywodzi się z Indii. Powstała prawdopodobnie pod koniec VI wieku naszej ery. Z początku rozprzestrzeniła się w Persji. Nowa gra zyskała tam duże uznanie. Wraz z podbiciem Persji przez Arabów szachy zyskały nowych entuzjastów. Prawdopodobnie w tym okresie zaczęto wprowadzać pierwsze aktualizacje reguł gry. Przez Arabię szachy rozprzestrzeniły się do Europy poprzez kraje Morza Śródziemnego. Do Rosji gra dotarła w podobnym czasie niezależnie, bezpośrednio ze wschodu.
+
+Okres świetności szachów w Europie zaczął się w XVI wieku, a istotnym w tej kwestii czynnikiem była kolejna aktualizacja zasad gry. Jej autorami byli włoscy gracze. Ciekawą zmianą było uczynienie królowej potężną figurą, wcześniej była nieistotnie użyteczna. Wtedy także wprowadzono roszadę.
+
+Od tamtej pory gra nie zmieniła się co do zasad. Każde kolejne stulecie produkuje jednak coraz potężniejszych graczy. Z jednej strony średni iloraz inteligencji w światowej populacji rośnie, ale też informatyzacja zapewniła nam dostęp do niewyobrażalnie potężnych silników szachowych, których obserwacja rzuca nowe światło na to jak powinno się grać.

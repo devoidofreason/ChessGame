@@ -1,20 +1,20 @@
+#include "Piece.h"
+#include "HeuristicComposer.h"
 #include "Game.h"
+
 #include <iostream>
 #include <fstream>
 
-#include "Piece.h"
-#include "MaterialHeuristic.h"
-
 Game::Game(bool humanPlayerWhite, bool humanPlayerBlack){
 	board = new Board();
-	negamax = new Negamax(3);
+	negamax = new Negamax(3, new HeuristicComposer(true, true, true, true));
+	// MaterialHeuristic, ActivityHeuristic, PawnHeuristic, KnightHeuristic
 	this->humanPlayerWhite = humanPlayerWhite;
 	this->humanPlayerBlack = humanPlayerBlack;
 }
 
 void Game::performGame(){
 	while(board->getStatus() == 0){
-		gameStory.push_back(board->hashCode);
 		if(board->whosTurn == 1){
 			if(humanPlayerWhite)
 				performHumanMove();
@@ -27,27 +27,11 @@ void Game::performGame(){
 			else
 				performAiMove();
 		}
-		if(gameStory.size() > 4){
-			int* ocurred = new int[gameStory.size()];
-			for(int i=0; i<gameStory.size(); i++)
-				ocurred[i] = 0;
-			for(int i=0; i<gameStory.size(); i++)
-				for(int j=0; j<gameStory.size(); j++)
-					if(i != j && gameStory[j] == gameStory[i])
-						ocurred[i] ++;
-			for(int i=0; i<gameStory.size(); i++){
-				if( !(ocurred[i] < 3) ){
-					std::cout << "Draw by 3 fold repetition.\n";
-					return;
-				}
-			}
-			delete [] ocurred;
-		}
 	}
 	int status = board->getStatus();
 	board->printBoard();
-	Heuristic* m = negamax->heuristic;
-	std::cout << "Evalutaion : " << board->whosTurn * m->evaluatePosition(board) << "\n";
+	HeuristicComposer* m = negamax->h;
+	std::cout << "Evalutaion : " << board->whosTurn * m->getEvaluation(board) << "\n";
 	if(status == DRAW)
 		std::cout << "Draw.\n";
 	else if(status == WHITE_WINS)
@@ -62,8 +46,8 @@ void Game::performHumanMove(){
 	std::string column1, column2;
 	int c;
 	board->printBoard();
-	Heuristic* m = negamax->heuristic;
-	std::cout << "Evalutaion : " << board->whosTurn * m->evaluatePosition(board) << "\n";
+	HeuristicComposer* m = negamax->h;
+	std::cout << "Evalutaion : " << board->whosTurn * m->getEvaluation(board) << "\n";
 	for(int i=0; i<labels.size()/2; i++){
 		column1 = ( (i < 10) ? " " : "" );
 		column1 += std::to_string(i);
@@ -95,8 +79,8 @@ void Game::performHumanMove(){
 
 void Game::performAiMove(){
 	board->printBoard();
-	Heuristic* m = negamax->heuristic;
-	std::cout << "Evalutaion : " << board->whosTurn * m->evaluatePosition(board) << "\n";
+	HeuristicComposer* m = negamax->h;
+	std::cout << "Evalutaion : " << board->whosTurn * m->getEvaluation(board) << "\n";
 	Board* tmp = board;
 	board = negamax->getBestMove(board);
 	delete tmp;
@@ -105,5 +89,4 @@ void Game::performAiMove(){
 Game::~Game(){
 	delete board;
 	delete negamax;
-	gameStory.clear();
 }

@@ -2,8 +2,6 @@
 #include "Piece.h"
 
 float MaterialHeuristic::evaluatePosition(Board* board){
-	if(gameStatusValue(board))
-		return gameStatusValue(board);
 	bool whiteBishop = false, blackBishop = false;
 	float whiteMaterial = 0.0f, blackMaterial = 0.0f;
 	for(int i=0; i<board->pieces.size(); i++){

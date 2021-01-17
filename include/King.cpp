@@ -1,6 +1,5 @@
 #include "King.h"
 #include "Rook.h"
-#include <iostream>
 
 std::vector<Square*> King::possibleSquares(Board* board, Square* square){
 	std::vector <Square*> ret;

@@ -1,8 +1,10 @@
 #ifndef PIECE_H
 #define PIECE_H
-#include <vector>
+
 #include "Board.h"
 #include "Square.h"
+
+#include <vector>
 
 class Piece{
 public:

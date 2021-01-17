@@ -1,6 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
+
 #include "Square.h"
+
 #include <vector>
 #include <string>
 
@@ -18,17 +20,18 @@ public:
 	Square* blackKingPos;
 	Square* square1;
 	Square* square2;
+	char capturedPiece;
 	std::vector<Piece*> pieces;
 	int whosTurn;
 	bool onBoard(int, int);
 	Square* resolveSquareCode(std::string);
 	void printBoard();
-	void printBoard(Square*);
 	std::vector<Board*> generateChildren();
 	std::vector<Board*> generateChildren(std::vector<std::string>* labels);
 	void calculateHashCode();
 	int getStatus();
 	unsigned long long int hashCode;
+	std::vector<unsigned long long int> prevHashes;
 	float evaluation;
 	~Board();
 };

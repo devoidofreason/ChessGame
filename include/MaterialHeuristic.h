@@ -1,5 +1,6 @@
 #ifndef MATERIALHEURISTIC_H
 #define MATERIALHEURISTIC_H
+
 #include "Heuristic.h"
 
 class MaterialHeuristic : public Heuristic

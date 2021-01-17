@@ -5,11 +5,12 @@
 #include "Queen.h"
 #include "Pawn.h"
 #include "King.h"
+#include "sha256.h" // Big thanks to Mr. Olivier Gay
+// http://www.zedwood.com/article/cpp-sha256-function
+
 #include <iostream>
 #include <algorithm>
 #include <cstdlib>
-#include "sha256.h" // Big thanks to Mr. Olivier Gay
-// http://www.zedwood.com/article/cpp-sha256-function
 
 Board::Board(){
 	board = new Square** [8];
@@ -31,9 +32,17 @@ Board::Board(){
 	pieces.push_back(newPiece);
 	board[0][0]->setPiece(newPiece);
 
+	newPiece = new Pawn(owner);
+	pieces.push_back(newPiece);
+	board[1][0]->setPiece(newPiece);
+
 	newPiece = new Rook(owner);
 	pieces.push_back(newPiece);
 	board[0][7]->setPiece(newPiece);
+
+	newPiece = new Pawn(owner);
+	pieces.push_back(newPiece);
+	board[1][7]->setPiece(newPiece);
 
 	owner = 1;
 
@@ -45,15 +54,24 @@ Board::Board(){
 	pieces.push_back(newPiece);
 	board[7][7]->setPiece(newPiece);
 
+	newPiece = new Pawn(owner);
+	pieces.push_back(newPiece);
+	board[6][7]->setPiece(newPiece);
+
 	newPiece = new Rook(owner);
 	pieces.push_back(newPiece);
 	board[7][0]->setPiece(newPiece);
+
+	newPiece = new Pawn(owner);
+	pieces.push_back(newPiece);
+	board[6][0]->setPiece(newPiece);
 
 	blackKingPos = board[0][4];
 	whiteKingPos = board[7][4];
 	*/
 
 	whosTurn = 1;
+	capturedPiece = 0;
 
 	Piece* newPiece;
 	int owner = -1; // Firstsly: black pieces
@@ -122,6 +140,7 @@ Board::Board(){
 	whiteKingPos = board[7][4];
 	
 	calculateHashCode();
+	prevHashes.push_back(hashCode);
 }
 
 Board::Board(Board* parent){
@@ -131,7 +150,9 @@ Board::Board(Board* parent){
 		for(int j=0; j<8; j++)
 			board[i][j] = new Square(i, j);
 	}
+
 	whosTurn = -parent->whosTurn;
+	capturedPiece = 0;
 
 	Piece* newPiece;
 	for(int i=0; i<8; i++)
@@ -160,6 +181,8 @@ Board::Board(Board* parent){
 	x = parent->blackKingPos->getX();
 	y = parent->blackKingPos->getY();
 	blackKingPos = board[x][y];
+	for(int i=0; i<parent->prevHashes.size(); i++)
+		prevHashes.push_back(parent->prevHashes[i]);
 }
 
 bool Board::onBoard(int x, int y){
@@ -198,32 +221,6 @@ void Board::printBoard(){
 		std::cout << "\n";
 	}
 	std::cout << "\n\n";
-}
-
-void Board::printBoard(Square* square){
-	/*
-	system("cls");
-	if(!square)
-		return;
-	if(!square->getPiece())
-		return;
-	std::vector<Square*> possibleSquares = square->getPiece()->possibleSquares(this, square);
-	std::cout << "  ";
-	for(int i=0; i<8; i++)
-		std::cout << " " << char('a' + i) << " ";
-	for(int i=0; i<8; i++){
-		std::cout << "\n\n" << char('8' - i) << " ";
-		for(int j=0; j<8; j++){
-			if(board[i][j]->getPiece())
-				std::cout << ( (board[i][j]->getPiece()->getOwner() == -1 ) ? "-" : " " )
-					<< board[i][j]->getPiece()->getCodeText();
-			else
-				std::cout  << " " << char(176);
-			std::cout << ( (std::find(possibleSquares.begin(), possibleSquares.end(), board[i][j]) != possibleSquares.end()) ? "<" : " ");
-		}
-	}
-	std::cout << "\n" << stringHashCode << "\n" << hashCode << "\n";
-	*/
 }
 
 std::vector<Board*> Board::generateChildren(){
@@ -269,12 +266,14 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						newState = new Board(this);
 						if(capturedPiece = newState->board[x][y]->getPiece()){
 							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
+							newState->capturedPiece = capturedPiece->getCodeText();
 							delete capturedPiece;
 							label2 += "x ";
 						}
 						else if(y != j && !newState->board[x][y]->getPiece()){ // En passant - execute
 							capturedPiece = newState->board[i][y]->getPiece();
 							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
+							newState->capturedPiece = capturedPiece->getCodeText();
 							delete capturedPiece;
 							newState->board[i][y]->setPiece(0);
 							newState->board[x][y]->setPiece(newState->board[i][j]->getPiece());
@@ -292,6 +291,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 								}
 							}
 							newState->calculateHashCode();
+							newState->prevHashes.push_back(newState->hashCode);
 							newState->square1 = newState->board[i][j];
 							newState->square2 = newState->board[x][y];
 							label2 += "xEn ";
@@ -331,6 +331,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 								}
 							}
 							newStateAfterPromotion->calculateHashCode();
+							newState->prevHashes.push_back(newState->hashCode);
 							newStateAfterPromotion->square1 = newState->board[i][j];
 							newStateAfterPromotion->square2 = newState->board[x][y];
 							tmp = label2 + " -> Q";
@@ -342,6 +343,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							newStateAfterPromotion->pieces.push_back(newPiece);
 							newStateAfterPromotion->board[x][y]->setPiece(newPiece);
 							newStateAfterPromotion->calculateHashCode();
+							newState->prevHashes.push_back(newState->hashCode);
 							newStateAfterPromotion->square1 = newState->board[i][j];
 							newStateAfterPromotion->square2 = newState->board[x][y];
 							tmp = label2 + " -> R";
@@ -353,6 +355,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							newStateAfterPromotion->pieces.push_back(newPiece);
 							newStateAfterPromotion->board[x][y]->setPiece(newPiece);
 							newStateAfterPromotion->calculateHashCode();
+							newState->prevHashes.push_back(newState->hashCode);
 							newStateAfterPromotion->square1 = newState->board[i][j];
 							newStateAfterPromotion->square2 = newState->board[x][y];
 							tmp = label2 + " -> B";
@@ -364,6 +367,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							newStateAfterPromotion->pieces.push_back(newPiece);
 							newStateAfterPromotion->board[x][y]->setPiece(newPiece);
 							newStateAfterPromotion->calculateHashCode();
+							newState->prevHashes.push_back(newState->hashCode);
 							newStateAfterPromotion->square1 = newState->board[i][j];
 							newStateAfterPromotion->square2 = newState->board[x][y];
 							tmp = label2 + " -> N";
@@ -387,6 +391,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							}
 						}
 						newState->calculateHashCode();
+						newState->prevHashes.push_back(newState->hashCode);
 						newState->square1 = newState->board[i][j];
 						newState->square2 = newState->board[x][y];
 						labels->push_back(label2);
@@ -405,6 +410,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						newState = new Board(this);
 						if(capturedPiece = newState->board[x][y]->getPiece()){
 							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
+							newState->capturedPiece = capturedPiece->getCodeText();
 							delete capturedPiece;
 							label2 += "x ";
 						}
@@ -424,6 +430,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							}
 						}
 						newState->calculateHashCode();
+						newState->prevHashes.push_back(newState->hashCode);
 						newState->square1 = newState->board[i][j];
 						newState->square2 = newState->board[x][y];
 						labels->push_back(label2);
@@ -442,6 +449,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						newState = new Board(this);
 						if(capturedPiece = newState->board[x][y]->getPiece()){
 							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
+							newState->capturedPiece = capturedPiece->getCodeText();
 							delete capturedPiece;
 							label2 += "x ";
 						}
@@ -459,6 +467,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 								static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
 							}
 							newState->calculateHashCode();
+							newState->prevHashes.push_back(newState->hashCode);
 							newState->square1 = newState->board[i][j];
 							newState->square2 = newState->board[x][y];
 							label2 += "O-O-O ";
@@ -480,6 +489,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 								static_cast<King*>(newState->blackKingPos->getPiece())->setWasMoved();
 							}
 							newState->calculateHashCode();
+							newState->prevHashes.push_back(newState->hashCode);
 							newState->square1 = newState->board[i][j];
 							newState->square2 = newState->board[x][y];
 							label2 += "O-O ";
@@ -507,6 +517,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							}
 						}
 						newState->calculateHashCode();
+						newState->prevHashes.push_back(newState->hashCode);
 						newState->square1 = newState->board[i][j];
 						newState->square2 = newState->board[x][y];
 						labels->push_back(label2);
@@ -525,6 +536,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 						newState = new Board(this);
 						if(capturedPiece = newState->board[x][y]->getPiece()){
 							newState->pieces.erase(std::remove(newState->pieces.begin(), newState->pieces.end(), capturedPiece), newState->pieces.end());
+							newState->capturedPiece = capturedPiece->getCodeText();
 							delete capturedPiece;
 							label2 += "x ";
 						}
@@ -543,6 +555,7 @@ std::vector<Board*> Board::generateChildren(std::vector<std::string>* labels){
 							}
 						}
 						newState->calculateHashCode();
+						newState->prevHashes.push_back(newState->hashCode);
 						newState->square1 = newState->board[i][j];
 						newState->square2 = newState->board[x][y];
 						labels->push_back(label2);
@@ -592,6 +605,20 @@ int Board::getStatus(){
 	std::vector<Board*> children = generateChildren();
 	int sumWhite = 0;
 	int sumBlack = 0;
+	if(prevHashes.size() > 4){
+		int* ocurred = new int[prevHashes.size()];
+		for(int i=0; i<prevHashes.size(); i++)
+			ocurred[i] = 0;
+		for(int i=0; i<prevHashes.size(); i++)
+			for(int j=0; j<prevHashes.size(); j++)
+				if(i != j && prevHashes[j] == prevHashes[i])
+					ocurred[i] ++;
+		for(int i=0; i<prevHashes.size(); i++)
+			if( !(ocurred[i] < 2) ){
+				return DRAW;
+			}
+		delete [] ocurred;
+	}
 	for(int i=0; i<pieces.size(); i++){
 		if(pieces[i]->getCodeText() == 'P'){
 			if(pieces[i]->getOwner() == 1)
@@ -599,33 +626,29 @@ int Board::getStatus(){
 			else
 				sumBlack += 1000;
 		}
-		else if(pieces[i]->getCodeText() == 'Q')
-			if(pieces[i]->getCodeText() == 'P'){
-				if(pieces[i]->getOwner() == 1)
-					sumWhite += 1000;
-				else
-					sumBlack += 1000;
+		else if(pieces[i]->getCodeText() == 'Q'){
+			if(pieces[i]->getOwner() == 1)
+				sumWhite += 1000;
+			else
+				sumBlack += 1000;
 		}
-		else if(pieces[i]->getCodeText() == 'R')
-			if(pieces[i]->getCodeText() == 'P'){
-				if(pieces[i]->getOwner() == 1)
-					sumWhite += 1000;
-				else
-					sumBlack += 1000;
+		else if(pieces[i]->getCodeText() == 'R'){
+			if(pieces[i]->getOwner() == 1)
+				sumWhite += 1000;
+			else
+				sumBlack += 1000;
 		}
-		else if(pieces[i]->getCodeText() == 'B')
-			if(pieces[i]->getCodeText() == 'P'){
-				if(pieces[i]->getOwner() == 1)
-					sumWhite += 1000;
-				else
-					sumBlack += 1000;
+		else if(pieces[i]->getCodeText() == 'B'){
+			if(pieces[i]->getOwner() == 1)
+				sumWhite += 3;
+			else
+				sumBlack += 3;
 		}
-		else if(pieces[i]->getCodeText() == 'N')
-			if(pieces[i]->getCodeText() == 'P'){
-				if(pieces[i]->getOwner() == 1)
-					sumWhite += 3;
-				else
-					sumBlack += 3;
+		else if(pieces[i]->getCodeText() == 'N'){
+			if(pieces[i]->getOwner() == 1)
+				sumWhite += 3;
+			else
+				sumBlack += 3;
 		}
 	}
 	int ret = -1;

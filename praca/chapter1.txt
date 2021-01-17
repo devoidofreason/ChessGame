@@ -1,0 +1,237 @@
+%----------------------------------------------------------------------------------------
+%	CHAPTER 1
+% 	J. Kolodziejczyk
+%----------------------------------------------------------------------------------------
+
+\chapter{Gra w szachy - definicje i reguły poprawnej gry}
+\label{rozdzial1}
+
+\section{Czym są szachy}
+\index{Czym są szachy}
+
+Szachy to skończona, turowa gra strategiczna o sumie zerowej. Szachownica jest podzielona wzdłóż na 8 linii (oznaczonych cyframi od 1 do 8) i wszerz na 8 rzędów (wyróżnione pierwszymi 8 literami alfabetu: a,b,c...). 
+
+Na 64 polach planszy odbywa się starcie białych i czarnych bierek - każda z nich jest pionkiem, skoczkiem, gońcem, wieżą, potężną królową lub królem - ten ostatni jest kluczowym elementem, bo zdobycie króla przeciwnika jest celem gry. Poza pionkiem - każdy typ nazywamy figurą. Ze względu na to jaką figurą lub pionkiem jest bierka - odpowiada jej inny zbiór wzorców legalnych ruchów, a dokładniej rozwinę tę kwestię w dalszej części pracy.
+
+Gracze naprzemiennie wykonują ruchy bierkami, pierszeństwo mają białe. Jednym ruchem, wbrew najprostszej intuicji, nazywamy dwa kolejne takie posunięcia (półruchy): decyzję białego wraz z następującym wyborem czarnego. Każda partia gry w szachy zaczyna się w ściśle określonej pozycji, pokażę ją dalej.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/Szachownica.JPG}
+\caption{Plansza do gry w szachy.}
+\label{Szachownica} % Unique label used for referencing the figure in-text
+\end{figure}
+
+\section{Zakończenia partii szachów}
+\index{Zakończenia partii}
+
+Zwieńczeniem partii szachów może być zwycięstwo jednego z graczy lub remis.
+
+\subsection{Mat}
+
+Pierwsza sytuacja jest równoważna z tak zwanym zamatowaniem (wcześniej nazwałem to - {\em zdobyciem}) króla. Koncept ten polega na tym, że monarcha danego gracza musi być zaatakowany przez przeciwnika, przy czym nie istnieje dalsza możliwość jego ocalenia - żadna ucieczka ani obrona nie są dostępne. Upraszczając tę definicję można powiedzieć, że celem gry w szachy jest zbicie króla, ale gra się kończy jedeno posunięcie przed nieuchronną egzekucją władcy.
+
+Tak jak formalnie zwycięstwo można osiągnąć na jeden sposób, remis może wyninkąć w kilku rozłącznych sytuacjach.
+
+\subsection{Remis przez niedostateczny materiał}
+
+Z remisem przez niedostateczny materiał mamy do czynienia, gdy obaj gracze ponieśli w bitwie tak ciężkie straty, że zamatowanie króla przeciwnika byłoby niemożliwe. Król jest relatownie mobilną figurą, więc pojmanie monarchy wymaga posiadania pewnej ilości zasobów. Jeżeli ten warunek nie jest spełniony dla oby graczy, kontynuowanie gry byłoby absurdem, więc ogłaszany jest remis.
+
+\subsection{Remis przez trzykrotne powtórzenie pozycji}
+
+Zdaża się sytuacja, że gracze wykonując posunięcia wpadają w cykl na przykład ruszając wciąż te same figury w tę i z powrotem. Może być to spowodowane przekonaniem, że każdy inny ruch w osiągniętej pozycji przegrywa. Żeby gra nie trwała w nieskończoność wymyślono remis przez trzykrotne powtórzenie pozycji. Jak nazwa sugeruje - osiągnięcie danego stanu gry trzy razy (niekoniecznie poprzez powtarzalne ruchy) kończy partię remisem. Ten rodzaj zakończenia gry gwarantuje nam także skończoność gry, o której wspomniałem wyżej. Po wybróbowaniu każdej pozycji 2 razy konieczny jest nowy ruch jeżeli chcemy aby gra trwała nieprzerwanie, więc drzewo gry w szachy - mimo, że niewyobrażalnie ogromne - jest skończone, a jego rozmiar szacuje się na około $10^1^2^3$.
+
+\subsection{Pat}
+
+Ostatnią możliwością zremisowania gry jest pat. Z formalnego punktu widzenia ustawienie swojego króla w zasięgu rażenia figur przeciwnika tak, by mógł on go zbić w następnym posunięciu jest nielegalne. Może więc dojść do takiej sytuacji, że monarcha jednej ze stron, której poza królem nie została żadna figura ani pionek, jest otoczony z każdej strony wrogimi bierkami, ale sam nie jest atakowany. Wtedy ten gracz nie wykonać żadnego ruchu. Ta hipotetyczna sytuacja oddaje czym jest pat. Mamy z nim więc do czynienia, gdy jeden z graczy:
+\begin{itemize}
+\item jest na posunięciu (czyli jego kolej by wykonać ruch),
+\item nie ma dostępnego legalnego ruchu,
+\item jego król nie jest atakowany.
+\end{itemize}
+Ten ostatni czynnik różni pata od mata. Szczegół może zadecydować o zwycięstwie lub minięciu się z nim.
+
+\section{Właściwości bierek - czyli czym gramy w szachy}
+\index{Właściwości bierek}
+
+\subsection{Początkowy zbiór bierek i ich ułożenie}
+Obie strony konfliktu są początkowo wyposażone w 16 bierek:
+\begin{itemize}
+\item 8 pionów (pawn),
+\item 2 skoczki (knight),
+\item 2 gońce (bishop),
+\item 2 wieże (rook),
+\item hetmana/królową (queen),
+\item króla (king).
+\end{itemize}
+
+Ilustracja \ref{StanPoczatkowy} przedstawia ułożenie bierek na szachownicy w stanie początkowym. Na drugim i siódmym rzędzie znajdują się piony. Wieże zaczynają grę w rogach planszy. Bliżej środka pary skoczków, następnie gońców. Linię {\em e} w pierwszym i ostatnim rzęczie zajmują króle, obok nich hetmany.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/Ulozeniepoczatkowe.JPG}
+\caption{Stan początkowy gry w szachy.}
+\label{StanPoczatkowy} % Unique label used for referencing the figure in-text
+\end{figure}
+
+\subsection{Pion}
+
+Pionek jest jedyną bierką, która nie jest figurą. Jest specyficzny także z inngeo powodu: ma kilka unikatowych właściwości. Pion może się poruszać tylko do przodu -  jeżeli uznamy rząd 8 za szczyt, a rząd pierwszy za spód szachownicy - tak, jak na rysunku, to białe piony maszerują tylko w górę szachownicy, a czarne tylko w dół.
+
+Standardowym ruchem piona jest jego pchnięcie. Polega ono na przemieszczeniu go o jedno polę {\em na przód} (będę się posługiwać tym uproszczeniem z poprzedniego akapitu dla przejżystości przekazu). Jest ono możliwe, gdy pole docelowe nie jest zajmowane przez żadną bierkę - także przeciwnika. Także opcja tego ruchu nie jest uznawana za atak na to pole, więc król przeciwnika może zająć pole potencjalnie dostępne dla piona, co jest nietypowe. W przypadku, gdy dany pion nie był jeszcze ruszany, czyli znajduje się na swoim początkowym rzędzie, może on być alternatywnie pchnięty o dwa pola. Niemożliwe jest {\em przeskoczenie pola} pionem popychanym o 2 pola na przód, jeśli jakakolwiek bierka znajduje się pomiędzy tymi polami. Obydwa warianty pchnięcia przedstawia rysunek \ref{PchnieciePiona}.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/PchnieciePiona.JPG}
+\caption{Białe grając e3 przepychają piona o 1 pole, czarne w odpowiedzi grają d5 - przemieszczając swoją bierkę o 2 pola.}
+\label{PchnieciePiona} % Unique label used for referencing the figure in-text
+\end{figure}
+
+Pion atakuje dwa pola przed sobą z, którymi sąsiaduje rogami. Rysunek \ref{BiciePiona} przedstawia sytuację, gdy biały pion atakuje czarnego i jest możliwość wybicia na f5.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/BiciePiona.JPG}
+\caption{Biały pion atakuje czarnego piona na polu f5.}
+\label{BiciePiona} % Unique label used for referencing the figure in-text
+\end{figure}
+
+Możliwe dla piona jest także wyjątkowe bicie nazywane biciem w przelocie ({\em en passant}). Dostępne jest jeżeli pion danego gracza po pchnięciu z początkowego rzędu 2 pola na przód znalazł się w jednym rzędzie z wrogim pionem, sąsiadując z nim, ale tylko i wyłącznie w następnym posunięciu przeciwnika. Jeżeli oponent nie zdecydował się skorzystać z tego ruchu od razu - nie ma takiej opcji w przyszłości. Rysunek \ref{EnPassant} przedstawia pozycję w, której dostępne jest bicie w przelocie.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/EnPassant.JPG}
+\caption{Czarne grając pionem z f7 na f5 umożliwiły białemu bicie w przelocie. W przypadku wybicia: czarny pion znika z szachownicy, ale biały nie zajmuje jego pola, a zaznaczone na czerwono: f6.}
+\label{EnPassant} % Unique label used for referencing the figure in-text
+\end{figure}
+
+Ostatni aspekt poruszania się pionem to promocja. Jeżeli pion przemaszreruje całą szachownicę i trafi na najodleglejszy mu rząd (dla białego ósmy, dla czarnego pierwszy), przemienia się w figurę - skoczka, gońca, wieżę lub hetmana. W ogromnej większości przypadków najbardziej opłacalna jest promocja do królowej.
+
+Piony w grze w szachy stanowią pierwszą linię frontu. Walczą o kluczowe pola, zasłaniają sobą króla i inne figury, zajmują przestrzeń. Ze strategicznego punktu widzenia pojedyńczy pion jest mało warty. Częstym zabiegeim jest rzucanie pionów na ofiarę żeby sprowokować do wybicia celem zyskania tępa ataku poprzez kontratak, rozbicia solidnej struktóry pionów przeciwnika lub odciągnięcia kluczowego obrońcy. Los pionów w grze w szachy nie jest łatwy.
+
+\subsection{Goniec}
+
+Goniec porusza się po po przekątnych. W konsekwencji poprzedniego: zawsze dany goniec porusza się po polach tego samego koloru. Obaj gracze zaczynają grę z gońcami: czarnopolowym i białopolowym. Wartościowe jest zachowanie pary gońców, w przypadku utraty jednego z nich przeciwnik może grać wokół pól danego koloru - pozostały goniec może stać się bezużyteczny.
+
+Siłą gońca jest jego duży zasięg. Mimo, że pojedyńczy goniec może zajmować tylko połowę pól na szachownicy, możliwość przucenia go w zupełnie inny obszar konfiktu jednym posunięciem jest jego siłą. Ograniczyć taktyczne możliwości tej figury można kontrolując kluczowe przekątne i blokując pola, które byłyby użyteczne w manewrowaniu. Gońce sprawdzają się najlepiej w sytuacjach z otwrtymi pozycjami, a silna para gońców, która jest wymierzona w królewski obóz, może czynić spustoszenie.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/Goniec.JPG}
+\caption{Białopolowy goniec - strzałki pokazują dostępne pola, na czerwono możliwe zbicia.}
+\label{Goniec} % Unique label used for referencing the figure in-text
+\end{figure}
+
+\subsection{Skoczek}
+Skoczek, który wyglądem przypomina konia porusza się w specyficzny sposób. Z pola na którym jest skoczek wyprowadzamy proste promienie długości 2 pól, w czterech kierunkach - w górę, w dół, w lewo i w prawo. Z pól końcowych tych promieni dostępne dla tej figury pola to dwa sąsiadujące z nimi, znajdujące się na kierunku (ma na myśli kierunek taki, jak rachunku wektorów) prostopadłym do danego promienia. Od tego słownego opisu dużo jaśniejszym wyjaśnieniem jest rysunek \ref{Skoczek}. Możemy też patrzeć na ruchy skoczka, jako wszystkie {\em litery L} utworzone według tego wzorca.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/Skoczek.JPG}
+\caption{Strzałki prezentują dostępne ruchy skoczka. Na czerwono możliwe wybicia.}
+\label{Skoczek} % Unique label used for referencing the figure in-text
+\end{figure}
+
+Unikatową cechą skoczka jest fakt, że jego ruchu nie da się zablokować {\em stając mu na drodze}. W przypadku tej figury liczy się tylko to, co jest na polu końcowym, a nie obchodzi nas co jest po drodze do celu.
+
+Skoczki są silnymi infiltratorami. Z faktu, że ich ruchy nie mogą być zasłonięte wynika ich wyśmienita skuteczność w zamkniętych, zblokowanych murem pionów pozycjach. Częstym motywem taktycznym w grze w szachy jest skoczek, który stwarza zagrożenie wdarcia się do obozu króla, celem zaatakowania go i w rezultacie zbicia wartościowej wieży.
+
+Skoczki i gońce klasyfikujemy jako figury lekkie. Są bardzo użyteczne, ale to losy ich potężniejszych braci - figur ciężkich determinują wynik starcia.
+
+\subsection{Wieża}
+
+Wieże poruszają się po liniach prostych. Rysunek \ref{Wieża} przedstawia dostępne ruchy wieży w pewnej pozycji.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/Wieża.JPG}
+\caption{Biała wieża po zajęciu pół-otwartej linii {\em e} jest wyśmienitą figurą.}
+\label{Wieża} % Unique label used for referencing the figure in-text
+\end{figure}
+
+Wieże zachowują dużą mobilność gońca, a przy tym sposób w jaki się poruszają umożliwia im zajęcie potencjalnie każdego pola. Są to figury dość silne i wartościowe. We wczesnej fazie gry rzadko znajdują zastosowanie, bo podobnie jak w przypadku gońca - wieża jest najsilniejsza kiedy mało przeszkód stoi na jej drodze, ale także ten fakt jest determinowany dużą odległością wież od centrum, a właśnie wokół centrum najczęściej toczy się otwarcie.
+
+Wieże są niemal stworzone do współpracy, ale ich synergiczne aktywowanie jest też trudne ze względu na to, że zaczynają grę w przeciwnych rogach. Bardzo silnym układem są wieże połączone, okupujące razem pewną linię lub rząd. Z podwojoną mocą są wtedy atakującymi i obrońcami i trudno jest się im przeciwwstawić. Często zadaniem pionów i lekkich figur jest otwrcie pewnej linii celem zdominowania jej przez wieże. W terminologii szachów istnieje pojęcie motywu: {\em wieża na siódemce}, co znaczy że kiedy wieża białych zajmie siódmy rząd (analogicznie wieża czarnych - drugi), oponent może mieć duże kłopoty. 
+
+\subsection{Hetman}
+
+Królowa to bez dwóch zdań najsilniejsza figura. Zbiorem możliwych ruchów tej figury jest suma tych zbiorów dla gońca i wieży. Porusza się więc ona po liniach prostych i po przekątnych. Rysunek \ref{Hetman} pokazuje możliwe ruchy białego hetmana.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/Hetman.JPG}
+\caption{Wyprowadzony hetman będzie miał wiele możliwości ruszenia się. }
+\label{Hetman} % Unique label used for referencing the figure in-text
+\end{figure}
+
+Aktywna królowa jest koszmarem dla przeciwnika. Jest silna, bo ma największą mobilność. Trudno analizować pozycję, kiedy wrogi hetman próbuje zinfiltrować naszą, bo jest wiele ruchów do rozpatrzenia. Zdecydowanie królowa w szachach budzi postrach.
+
+Skoro ta figura jest tak dużo warta trzeba uważać by nie pchnąć jej w wir walki zbyt wcześnie, bo jest ona wtedy łatwym celem zaczepnych ataków. Wymuszając jej odwrót figury oponenta mogą się świetnie przegrupować.
+
+\subsection{Król}
+
+Wokół króla toczy się całkowicie gra w szachy. Jego standardowy ruch polega na przemieszczeniu się na nieatakowane przez bierkę przeciwnika, sąsiednie pole. Rysunek \ref{Król} przedstawia możliwe ruchy białego króla w pewnej pozycji. Trzeba też mieć wzgląd na króla, nawet gdy go nie ruszamy. Nielegalny jest ruch figurą, która zasłania sobą atak na króla - wtedy przeciwnik mógłby zbić monarchę, co jest niemożliwe z perspektywy reguł.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/Król.JPG}
+\caption{Dostępne ruchy króla. Tym razem czerwone pola oznaczają legalne posunięcia, a strzałki pokazują jak wrogie pionki ograniczają możliwości monarchy.}
+\label{Król} % Unique label used for referencing the figure in-text
+\end{figure}
+
+Dodatkowo król ma też możliwość zrobienia roszady, czyli przemieszczenia się o dwa pola w prawo lub w lewo. Ten specialny ruch zmienia pozycje  króla i jednej z wież, która ląduje obok króla, w tym samym rzędzie, na polu bliższym do centrum. Żeby dostępna była roszada muszą być spełnione następujące warunki:
+\begin{itemize}
+\item król nie wykonał wcześniej ruchu,
+\item wieża z, którą chcemy wykonać roszadę także nie była ruszana,
+\item król nie jest szachowany - atakowany,
+\item pole przez, które {\em przeskakuje} król nie jest atakowane, a także pole docelowe nie jest atakowane,
+\item pomiędzy królem, a daną wieżą nie ma żadnych figur.
+\end{itemize}
+
+Rysunki \ref{RoszKról} oraz \ref{RoszHet} przedstawiają dwa warianty roszady. Analogicznie wygląda to dla czarnych (to znaczy, że odpowiadające czarnym pola roszad są na tych samych liniach, ale w ostatnim rzędzie). 
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.35]{Dyplom-styl/Pictures/RoszKról.JPG}
+\caption{Przebieg roszady królewskiej.}
+\label{RoszKról} % Unique label used for referencing the figure in-text
+\end{figure}
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.35]{Dyplom-styl/Pictures/RoszHet.JPG}
+\caption{Przebieg roszady hetmańskiej.}
+\label{RoszHet} % Unique label used for referencing the figure in-text
+\end{figure}
+
+Roszada jest bardzo użyteczna. Nie dość, że król jest najczęściej bardziej bezpieczny blisko rogu niż w centrum, to jeszcze do gry wprowadzamy wieżę, która świetnie się czuje na środku.
+
+Pozycja króla przez większość partii powinna być pasywna. Najcenniejszą figurę chowa się za pionami i broni za wszelka cenę. W końcówce, gdy zostało mało niebezpiecznych figur, a na przykład same pionki monarcha powinien być jednak aktywowany, bo skoro nie grozi mu żadne niebezpieczeństwo - niech weźmie udział w walce.
+
+\section{Wskazówki przydatne w analizie pozycji}
+
+Partia szachów polega na ciągłym dokonywaniu wyborów. Istnieje wiele reguł dotyczących poprawnej gry. Dobry ruch w tym rozumieniu polega na znalezieniu optymalnego kompromisu pomiędzy różnymi podejściami. Tę część pracy poświęcę wymienieniu kilku strategii gry w szachy. Te opisane w tej sekcji zostały wybrane przeze mnie jako heurystyki z, których korzysta silnik szachowy - rdzeń aplikacji stworzonej na potrzeby tej pracy.
+
+Gracz, a także silnik musi więc mieć wiedzę o wielu aspektach gry żeby być efektywnym. Ślepe podążanie za jednym tylko celem strategicznym nie jest dobrym przepisem na osiągnięcie szachowego mistrzostwa. W istocie gra polega na zwinnym handlowaniu dostępnymi dobrami. Ten kto okaże się lepszym kupcem wygrywa.
+
+Wcześniej wspominałem o nieszczęsnym losie pionków rzucanych czasem na ofiarę. Jest to pewna forma wymiany, handlu. Materiał w postaci bierki oferujemy w zamian za inne strategiczne dobro. Może być nim na przykład zwiększenie aktywnosci figury, rozbicie pozycji króla przeciwnika lub zyskanie tępa ataku. Takich potencjalnych dóbr jest bardzo dużo, ale nie wszystkie są mi znane oraz wymienianie ich nie jest przedmiotem pracy. Oczywiście zamatowanie przeciwnika jest wartością najwyższą w tej grze i nie można mówić o handlowaniu swoim królem. Niemniej jednak niektóre pozycje szachowe zaskakują tym, jak wymienne są dobra różnej kategorii.
+
+Rysunek \ref{PosHet} przedstawia pozycję osiągniętą w 1911 r.
+Po przeciwnych stronach stołu zasiedli wtedy: mistrz Edward Lasker jako białe oraz George Alan Thomas, który udowadnia prawdziwość twierdzenia, że {\em w zdrowym ciele zdrowy duch}, wykazując się także jako badmintonista i tenisista. Ta gra stanowi przykład tego jak dobro materialne może zostać wymienione na rozbicie pozycji króla przeciwnika, co w tym przypadku zakończyło się fatalnie dla czarnego.
+
+W tłumaczeniu tego, a także przyszłych, wariantów szachowych będę sie posługiwać oficjalnym formatem PGN, gdzie podajemy końcowe pole danego ruchu, pionka nie oznaczamy, skoczkowi odpowiada litera {\em N}, gońcowi {\em B}, wieży {\em R}, królowej {\em Q} a królowi {\em K}. Dodatkowo wybicie oznaczane jest {\em x}, a szachowanie - czyli atakowanie króla {\em +}, matowi odpowiada znak: {\em \#}. Czasami przed polem docelowym umieszczamy znak linii lub numer rzędu, ponieważ pole jest dostępne dla dwóch figur tego samego typu.
+
+\begin{figure}[h!]
+\centering\includegraphics[scale=0.5]{Dyplom-styl/Pictures/PoswiecenieKrolowej.JPG}
+\caption{Czarne zagrywając rozwojowy ruch {\em10... Qe7} przegrały grę. Białe mają możliwość poświęcenia wartościowej królowej bijąc pionka na h7. Stockfish - wyśmienity silnik szachowy, widzi w tej pozycji nieuchronną śmierć czarnego monarchy w 7 ruchach. Egzekucja przebiegła następująco: {\em 11.Qxh7+ Kxh7 12. Nxf6+ Kh6} - także dostępny był ruch {\em Kh8}, ale przegrywa szybciej, {\em 13. Neg4+ Kg5 14. h4+ Kf4 15. g3+  Kf3 16. Be2+ Kg2 17. Rh2+ Kg1 18. Kd2\#}.}
+\label{PosHet} % Unique label used for referencing the figure in-text
+\end{figure}
+
+\subsection{Wartość posiadanego materiału}
+
+Materiałem w grze w szachy nazywamy zestaw bierek, które nie są zbite - wciąż uczestniczą w partii. Gracz, który ma więcej materiału na ogół ma przewagę. Jak jednak ocenić ile warta jest armia? Gdyby zagadnienie miało się sprowadzic do policzenia żywych żołnierzy mogłby się okazać, że zostaliśmy z 5 pionkami, a przeciwnik jest w posiadaniu królowej i dwóch wież, co prawdopodobnie oznacza przegraną pozycję.  Każdemu typowi bierki nadano istotność liczbową. Mówi się, że dana figura ma pewną wartość punktową za wyjątkiem króla - uważa się, że jest bezcenny, bo nie można go wymienić. Wartości poszczególnych typów bierek prezentują się następująco:
+\begin{itemize}
+\item królowa - 9,
+\item wieża - 5,
+\item skoczek - 3,
+\item goniec - 3,
+\item pion - 1.
+\end{itemize}
+
+Posługiwanie się tym rozumowaniem jest konieczne przy prowadzeniu pojedynków w grze. Oczywiście nie chcemy wymienić np. wieży za piona, bo jest więcej warta punktowo, a podchodzimy do tego w ten sposób, bo wieża jest dużo bardziej użyteczna.
+
+W przypadku gońców jest przydatne zachowanie pary o czym wcześniej wspomniałem, więc moja heurystyka punktuje trochę wyżej posiadanie pary gońców niż wynikałoby z sumy ich wartości, ale szczegóły zaimplementowanych przeze mnie funkcji oceny pozycji rozwinę dalej.
+
+\subsection{Aktywność bierek}
+
+W szachach istnieje pojęcie rozwoju figur. Sprowadza się ono do takiego ułożenia swoich bierek na szchownicy, żeby były maksymalnie użyteczne. W tej kwestii trudno sformułować ogólnie prawdziwe reguły, bo to zagadnienie jest silnie związane z konkretną formacją bierek w danej pozycji, więc cele dalekosiężne mogą być bardzo różne. Najczęściej jednak poprawną praktyką jest takie granie figurami, aby w przyszłości miały wiele możliwości poruszenia się i tak właśnie wyraziłem tę strategię w funkcji heurystycznej.
+
+Dodatkowo wiedzę o aktywności bierek rozbiłem na szczególne warianty dla każdego typu, bo poza ilością legalnych ruchów, dla każdego typu bierki istnieją regóły poprawnej gry dotyczące stricte jej samej.

@@ -1,0 +1,18 @@
+pliki latex do edytowania:
+
+introduction.tex
+definitions.tex
+chapters.tex
+abstract.tex
+bibliograohy.bib
+chapterN.tex
+
+bibliografia:
+rodział1:
+	https://www.chess.com/article/view/principles-of-chess
+	https://www.chessstrategyonline.com/content/tutorials/introduction-to-chess-strategy-pawns
+	https://www.masterclass.com/articles/what-is-the-knight-in-chess#5-tactics-for-using-your-knights
+	https://www.masterclass.com/articles/what-is-the-bishop-in-chess#5-tactics-to-skillfully-use-your-bishop
+	https://www.chessstrategyonline.com/content/tutorials/introduction-to-chess-strategy-rooks
+rodział2:
+	- Mirosława Litmanowicz „SZACHY” M.A.W. Warszawa 1987

@@ -5,6 +5,9 @@
 #include <omp.h>
 #include <algorithm>
 
+#include <iostream>
+#include <conio.h>
+
 Negamax::Negamax(int depth, HeuristicComposer* h){
 	this->depth = depth;
 	this->h = h;
@@ -17,9 +20,10 @@ Board* Negamax::getBestMove(Board* board){
 	{
 		#pragma omp single
 		{
-			for(int i=0; i<children.size(); i++)
+			for(int i=0; i<children.size(); i++){
 				#pragma omp task
 				children[i]->evaluation = -negamaxStep(children[i], depth, -INF, INF);
+			}
 			#pragma omp taskwait
 		}
 	}
@@ -43,10 +47,11 @@ bool compareStates(Board* b1, Board* b2){
 }
 
 float Negamax::negamaxStep(Board* board, int depth, float alpha, float beta){
-	if(depth == 0 || board->getStatus() != 0)
-		return h->getEvaluation(board);
-	float val = -INF;
+	int gameStatus = board->getStatus();
+	if(depth == 0 || gameStatus != 0)
+		return h->getEvaluation(board, gameStatus, depth);
 	std::vector<Board*> children = board->generateChildren();
+	float val = -INF;
 	std::sort(children.begin(), children.end(), compareStates);
 	for(int i=0; i<children.size(); i++){
 		float tmp = -negamaxStep(children[i], depth - 1, -beta, -alpha);

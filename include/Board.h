@@ -30,6 +30,8 @@ public:
 	std::vector<Board*> generateChildren(std::vector<std::string>* labels);
 	void calculateHashCode();
 	int getStatus();
+	bool drawBy3FoldRepetition();
+	bool drawByInsufficientMaterial();
 	unsigned long long int hashCode;
 	std::vector<unsigned long long int> prevHashes;
 	float evaluation;

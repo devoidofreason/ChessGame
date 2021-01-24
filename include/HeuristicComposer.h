@@ -12,9 +12,9 @@
 class HeuristicComposer
 {
 public:
-	HeuristicComposer(bool, bool, bool, bool);
-	// MaterialHeuristic, ActivityHeuristic, PawnHeuristic, KnightHeuristic
-	float getEvaluation(Board*);
+	HeuristicComposer(bool, bool, bool, bool, bool, bool, bool, bool);
+	//MaterialHeuristic, ActivityHeuristic, PawnHeuristic, KnightHeuristic, BihopHeuristic, RookHeuristic, QueenHeuristic, KingHeuristic
+	float getEvaluation(Board*, int, int);
 	~HeuristicComposer();
 private:
 	std::vector<bool> computed;

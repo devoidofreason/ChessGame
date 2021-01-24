@@ -12,7 +12,7 @@ float KnightHeuristic::evaluatePiece(Board* board, Square* square){
 		float x = ABS(3.5f - square->getX());
 		float y = ABS(3.5f - square->getY());
 		float d = (float)sqrt( (x * x) + (y * y) );	// Pythagorean theorem -  distance from center
-		knightValue -= 0.25f * d;	// Penalty for being far from center
+		knightValue -= 0.15f * d;	// Penalty for being far from center
 		if(piece->getOwner() != 1)
 			knightValue *= -1;
 	}

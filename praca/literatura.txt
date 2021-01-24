@@ -1,21 +1,5 @@
-Algorytmy + str danych = programy
-https://hxim.github.io/Stockfish-Evaluation-Guide/
-
-negamax - algorytm
-transposition table
-researchgate
-
-pliki latex do edytowania:
-
-introduction.tex
-definitions.tex
-chapters.tex
-abstract.tex
-bibliograohy.bib
-chapterN.tex
-
-bibliografia:
-rodział1:
-
-rodział2:
-	- Mirosława Litmanowicz „SZACHY” M.A.W. Warszawa 1987
+https://www.researchgate.net/publication/319390201_APPLYING_ALPHA-BETA_ALGORITHM_IN_A_CHESS_ENGINE
+https://www.chessprogramming.org/Evaluation
+https://www.dailychess.com/rival/programming/moveorder.php
+https://umm-csci.github.io/senior-seminar/seminars/spring2017/marckel.pdf
+https://medium.com/the-innovation/the-anatomy-of-a-chess-ai-2087d0d565

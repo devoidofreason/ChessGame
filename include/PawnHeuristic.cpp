@@ -42,6 +42,8 @@ float PawnHeuristic::evaluatePiece(Board* board, Square* square){
 						friendlyPawnNerby = true;
 			}
 		}
+		if(!friendlyPawnNerby)
+			pawnValue -= 0.5f;
 
 		bool hostilePawnNearby = false;	// Bonus for passed pawns
 		if(piece->getOwner() == 1){

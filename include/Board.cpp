@@ -21,6 +21,7 @@ Board::Board(){
 	}
 
 	/*
+
 	int owner = -1;
 	Piece* newPiece;
 
@@ -50,6 +51,8 @@ Board::Board(){
 	pieces.push_back(newPiece);
 	board[7][4]->setPiece(newPiece);
 
+	
+
 	newPiece = new Rook(owner);
 	pieces.push_back(newPiece);
 	board[7][7]->setPiece(newPiece);
@@ -68,6 +71,7 @@ Board::Board(){
 
 	blackKingPos = board[0][4];
 	whiteKingPos = board[7][4];
+
 	*/
 
 	whosTurn = 1;
@@ -596,15 +600,12 @@ void Board::calculateHashCode(){
 	int c;
 	while (c = *gameStateByteSha256++)
 		hashCode = ((hashCode << 5) + hashCode) + c; /* hash * 33 + c */
-
-	//delete gameStateByteSha256;
-
 }
 
 int Board::getStatus(){
-	std::vector<Board*> children = generateChildren();
 	int sumWhite = 0;
 	int sumBlack = 0;
+	std::vector<Board*> children = generateChildren();
 	if(prevHashes.size() > 4){
 		int* ocurred = new int[prevHashes.size()];
 		for(int i=0; i<prevHashes.size(); i++)
@@ -674,6 +675,64 @@ int Board::getStatus(){
 		delete children[i];
 	children.clear();
 	return ret;
+}
+
+bool Board::drawBy3FoldRepetition(){
+	if(prevHashes.size() > 4){
+		int* ocurred = new int[prevHashes.size()];
+		for(int i=0; i<prevHashes.size(); i++)
+			ocurred[i] = 0;
+		for(int i=0; i<prevHashes.size(); i++)
+			for(int j=0; j<prevHashes.size(); j++)
+				if(i != j && prevHashes[j] == prevHashes[i])
+					ocurred[i] ++;
+		for(int i=0; i<prevHashes.size(); i++)
+			if( !(ocurred[i] < 2) ){
+				return true;
+			}
+		delete [] ocurred;
+	}
+	return false;
+}
+
+bool Board::drawByInsufficientMaterial(){
+	int sumWhite = 0;
+	int sumBlack = 0;
+	for(int i=0; i<pieces.size(); i++){
+		if(pieces[i]->getCodeText() == 'P'){
+			if(pieces[i]->getOwner() == 1)
+				sumWhite += 1000;
+			else
+				sumBlack += 1000;
+		}
+		else if(pieces[i]->getCodeText() == 'Q'){
+			if(pieces[i]->getOwner() == 1)
+				sumWhite += 1000;
+			else
+				sumBlack += 1000;
+		}
+		else if(pieces[i]->getCodeText() == 'R'){
+			if(pieces[i]->getOwner() == 1)
+				sumWhite += 1000;
+			else
+				sumBlack += 1000;
+		}
+		else if(pieces[i]->getCodeText() == 'B'){
+			if(pieces[i]->getOwner() == 1)
+				sumWhite += 3;
+			else
+				sumBlack += 3;
+		}
+		else if(pieces[i]->getCodeText() == 'N'){
+			if(pieces[i]->getOwner() == 1)
+				sumWhite += 3;
+			else
+				sumBlack += 3;
+		}
+	}
+	if(sumWhite < 6 && sumBlack < 6)
+		return true;
+	return false;
 }
 
 Board::~Board(){
